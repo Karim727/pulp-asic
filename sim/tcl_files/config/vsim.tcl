@@ -87,7 +87,7 @@ quietly set vsim_custom_args "\
 quietly set vopt_args ""
 if {$vopt_acc_ena == "YES"} {
   #+ quietly append vopt_args $vopt_args "+acc=abflmnprstv"
-  quietly append vopt_args $vopt_args "+acc=mnprv \
+  quietly append vopt_args $vopt_args "+acc \
                                        -assertdebug \
                                        -bitscalars \
                                        -fsmdebug \
