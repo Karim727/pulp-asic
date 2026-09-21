@@ -160,7 +160,7 @@ export PULP_RISCV_GCC_TOOLCHAIN= *path to riscv gcc toolchain*
 
 cd regression_tests/hello
 
-mae clean all run gui=1
+make clean all run gui=1
 
 ```
 The open-source simulation platform relies on JTAG to emulate preloading of the
