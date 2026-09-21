@@ -152,6 +152,8 @@ git clone https://github.com/pulp-platform/regression_tests.git
 
 git clone https://github.com/pulp-platform/pulp-runtime.git
 
+make fix_runtime
+
 source pulp-runtime/configs/pulp.sh
 
 export PATH=*path to riscv gcc toolchain*/bin:$PATH

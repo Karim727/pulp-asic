@@ -252,3 +252,9 @@ endif
 .PHONY: bender-rm
 bender-rm:
 	rm -f bender
+
+
+
+.PHONY: fix_runtime
+fix_runtime:
+	@sed -i 's/"rU"/"r"/g' $(PKG_DIR)/bin/slm_hyper.py
