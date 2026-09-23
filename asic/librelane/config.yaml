@@ -1,0 +1,33 @@
+DESIGN_NAME: riscv_core
+CLOCK_PORT: clk_i
+CLOCK_PERIOD: 20.0
+
+# Frontend
+USE_SLANG: true
+SYNTH_SHOW: true
+SYNTH_SHARE_RESOURCES: false
+SYNTH_HIERARCHY_MODE: flatten
+
+# Match core_region parameters
+SYNTH_PARAMETERS:
+  - "N_EXT_PERF_COUNTERS=5"
+  - "FPU=0"
+  - "SHARED_FP=0"
+
+# Target Defines
+VERILOG_DEFINES:
+  - SYNTHESIS
+  - TARGET_SYNTHESIS
+  - TARGET_RTL
+  - VERILATOR
+
+# Lint settings
+LINTER_DISABLE_WARNINGS:
+  - DECLFILENAME
+  - EOFNEWLINE
+  - ENUMVALUE
+  - BLKANDNBLK
+
+# Physical Design (Floorplan & Placement for Sky130)
+FP_CORE_UTIL: 40
+PL_TARGET_DENSITY: 0.45

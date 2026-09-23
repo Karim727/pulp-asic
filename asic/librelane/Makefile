@@ -1,73 +1,69 @@
 # ==============================================================================
 # Bender Module & Filelist Automation Makefile
 # ==============================================================================
-
+PACKAGE      ?= cv32e40p
 BENDER       ?= ../../bender
 OUT_DIR      ?= .
-TARGETS      ?= simulation test
+TARGETS      ?= synthesis rtl verilator
 
 # Packages to generate filelists for.
-# Defaults to all resolved packages found by bender if not specified.
 PACKAGES     ?= $(shell $(BENDER) packages 2>/dev/null)
 
+.PHONY: all help list-modules clean flist
 
-.PHONY: all help list-modules filelists clean
-
-all: filelists
+all: flist
 
 help:
 	@echo "Bender Filelist Generator"
 	@echo ""
 	@echo "Usage:"
-	@echo "  make list-modules           Show all available packages/dependencies"
-	@echo "  make filelists              Generate filelists for all packages"
-	@echo "  make filelists PACKAGES=\"common_cells pulp_soc pulp\""
-	@echo "                              Generate filelists only for specified packages"
-	@echo "  make <package_name>.flist   Generate a filelist for a single package"
-	@echo "  make clean                  Remove generated filelists"
-	@echo ""
-	@echo "Options:"
-	@echo "  TARGETS=\"<targets>\"         Bender target flags (default: \"$(TARGETS)\")"
-	@echo "  OUT_DIR=\"<path>\"            Output directory (default: \"$(OUT_DIR)\")"
+	@echo "  make <package_name>.yaml   Generate structured YAML filelist for any package"
+	@echo "  make flist                 Generate structured YAML for default PACKAGE ($(PACKAGE)) -> flist.yaml"
+	@echo "  make list-modules          Show all available packages/dependencies"
+	@echo "  make clean                 Remove generated YAML files"
 
-# ------------------------------------------------------------------------------
-# Module Inspection
-# ------------------------------------------------------------------------------
 list-modules:
 	@echo "=== Root Package & Direct Dependencies (from Bender.yml) ==="
 	@$(BENDER) packages
 	@echo ""
 
-# ------------------------------------------------------------------------------
-# Filelist Generation Rules
-# ------------------------------------------------------------------------------
 $(OUT_DIR):
 	@mkdir -p $(OUT_DIR)
 
-# Target-flag argument string builder
+# Target-flag argument string builder (no -n so full dependency tree is included)
 BENDER_TARGET_ARGS = $(foreach t,$(TARGETS),-t $(t))
 
-# Batch rule to generate filelists for all entries in $(PACKAGES)
-filelists: $(OUT_DIR)
-	@if [ -z "$(strip $(PACKAGES))" ]; then \
-		echo "Error: No packages found. Run 'bender update' or check your Bender.yml."; \
-		exit 1; \
-	fi
-	@for pkg in $(PACKAGES); do \
-		echo "Generating filelist for package: $$pkg -> $(OUT_DIR)/$$pkg.f"; \
-		$(BENDER) script flist $(BENDER_TARGET_ARGS) -p $$pkg > $(OUT_DIR)/$$pkg.f || exit 1; \
-	done
-	@echo "All filelists successfully generated in '$(OUT_DIR)/'."
+# Default target creates flist.yaml using $(PACKAGE)
+flist: $(OUT_DIR)
+	@echo "Generating structured YAML filelist for package: $(PACKAGE) -> $(OUT_DIR)/flist.yaml"
+	@$(BENDER) script flist-plus $(BENDER_TARGET_ARGS) -p $(PACKAGE) | awk ' \
+	  /^\+incdir\+/ { sub(/^\+incdir\+/, ""); incs[inc_count++] = $$0; next } \
+	  /^\+/         { next } \
+	  NF            { v_files[v_count++] = $$0 } \
+	  END { \
+	    print "VERILOG_INCLUDE_DIRS:"; \
+	    if (inc_count == 0) print "  []"; \
+	    else for (i = 0; i < inc_count; i++) print "  - " incs[i]; \
+	    print "\nVERILOG_FILES:"; \
+	    for (i = 0; i < v_count; i++) print "  - " v_files[i]; \
+	  }' > $(OUT_DIR)/flist.yaml
 
-# Pattern rule for generating a single module filelist on demand:
-# e.g.: make common_cells.flist or make pulp.flist
-%.flist: $(OUT_DIR)
-	@echo "Generating filelist for package: $* -> $(OUT_DIR)/$*.f"
-	@$(BENDER) script flist $(BENDER_TARGET_ARGS) -p $* > $(OUT_DIR)/$*.f
+# Pattern rule for generating a package-specific YAML filelist on demand:
+# e.g.: make cv32e40p.yaml
+%.yaml: $(OUT_DIR)
+	@echo "Generating structured YAML filelist for package: $* -> $@"
+	@$(BENDER) script flist-plus $(BENDER_TARGET_ARGS) -p $* | awk ' \
+	  /^\+incdir\+/ { sub(/^\+incdir\+/, ""); incs[inc_count++] = $$0; next } \
+	  /^\+/         { next } \
+	  NF            { v_files[v_count++] = $$0 } \
+	  END { \
+	    print "VERILOG_INCLUDE_DIRS:"; \
+	    if (inc_count == 0) print "  []"; \
+	    else for (i = 0; i < inc_count; i++) print "  - " incs[i]; \
+	    print "\nVERILOG_FILES:"; \
+	    for (i = 0; i < v_count; i++) print "  - " v_files[i]; \
+	  }' > $@
 
-# ------------------------------------------------------------------------------
-# Clean
-# ------------------------------------------------------------------------------
 clean:
-	@rm -rf $(OUT_DIR)
-	@echo "Cleaned generated filelists directory '$(OUT_DIR)'."
+	@rm -f flist.yaml
+	@echo "Cleaned generated YAML filelists in '$(OUT_DIR)'."
