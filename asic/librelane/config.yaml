@@ -1,19 +1,37 @@
 DESIGN_NAME: riscv_core
 CLOCK_PORT: clk_i
-CLOCK_PERIOD: 20.0
+CLOCK_PERIOD: 50.0
+PNR_SDC_FILE: dir::riscv_core.sdc
 
 # Frontend
 USE_SLANG: true
 SYNTH_SHOW: true
-SYNTH_SHARE_RESOURCES: false
+SYNTH_SHARE_RESOURCES: true
 SYNTH_HIERARCHY_MODE: flatten
+ERROR_ON_SYNTH_CHECKS: false
 
-# Match core_region parameters
+# Parameters from pulp_cluster.sv / core_region.sv
 SYNTH_PARAMETERS:
-  - "N_EXT_PERF_COUNTERS=5"
-  - "FPU=0"
-  - "SHARED_FP=0"
-
+  - "PULP_CLUSTER=1"
+  - "INSTR_RDATA_WIDTH=32"
+  - "N_EXT_PERF_COUNTERS=1"
+  - "PULP_SECURE=0"
+  - "USE_PMP=0"
+  - "N_PMP_ENTRIES=0"
+  - "FPU=1"
+  - "Zfinx=0"
+  - "FP_DIVSQRT=1"
+  - "SHARED_FP=2"
+  - "SHARED_FP_DIVSQRT=2"
+  - "SHARED_DSP_MULT=0"
+  - "SHARED_INT_MULT=0"
+  - "SHARED_INT_DIV=0"
+  - "WAPUTYPE=3"
+  - "APU_NARGS_CPU=3"
+  - "APU_WOP_CPU=6"
+  - "APU_NDSFLAGS_CPU=15"
+  - "APU_NUSFLAGS_CPU=5"
+  - "DM_HaltAddress=32'h1A110800"
 # Target Defines
 VERILOG_DEFINES:
   - SYNTHESIS
@@ -29,5 +47,8 @@ LINTER_DISABLE_WARNINGS:
   - BLKANDNBLK
 
 # Physical Design (Floorplan & Placement for Sky130)
-FP_CORE_UTIL: 40
-PL_TARGET_DENSITY: 0.45
+FP_SIZING: relative
+FP_CORE_UTIL: 30
+PL_TARGET_DENSITY_PCT: 45
+
+GRT_ADJUSTMENT: 0.25
