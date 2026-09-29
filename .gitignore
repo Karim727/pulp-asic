@@ -16,3 +16,9 @@
 /sim/transcript
 /sim/work
 /working_dir
+
+
+# asic
+
+/asic/librelane/runs
+/asic/librelane/flist.yaml

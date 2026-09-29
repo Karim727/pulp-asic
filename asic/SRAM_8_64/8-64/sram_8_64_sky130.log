@@ -1,0 +1,62 @@
+[2026-09-14 23:27:05.459020] |==============================================================================|
+[2026-09-14 23:27:05.459930] |=========                      OpenRAM v1.2.49                       =========|
+[2026-09-14 23:27:05.460325] |=========                                                            =========|
+[2026-09-14 23:27:05.460628] |=========               VLSI Design and Automation Lab               =========|
+[2026-09-14 23:27:05.460957] |=========        Computer Science and Engineering Department         =========|
+[2026-09-14 23:27:05.461225] |=========            University of California Santa Cruz             =========|
+[2026-09-14 23:27:05.461749] |=========                                                            =========|
+[2026-09-14 23:27:05.462161] |=========          Usage help: openram-user-group@ucsc.edu           =========|
+[2026-09-14 23:27:05.463834] |=========        Development help: openram-dev-group@ucsc.edu        =========|
+[2026-09-14 23:27:05.464208] |=========                See LICENSE for license info                =========|
+[2026-09-14 23:27:05.464537] |==============================================================================|
+[2026-09-14 23:27:05.465032] ** Start: 09/14/2026 23:27:05
+[2026-09-14 23:27:05.465378] Technology: sky130
+[2026-09-14 23:27:05.465929] Total size: 512 bits
+[2026-09-14 23:27:05.466345] Word size: 8
+Words: 64
+Banks: 1
+[2026-09-14 23:27:05.466639] Write size: 2
+[2026-09-14 23:27:05.467086] RW ports: 1
+R-only ports: 0
+W-only ports: 0
+[2026-09-14 23:27:05.467350] DRC/LVS/PEX is only run on the top-level design to save run-time (inline_lvsdrc=True to do inline checking).
+[2026-09-14 23:27:05.467888] DRC/LVS/PEX is disabled (check_lvsdrc=True to enable).
+[2026-09-14 23:27:05.468288] Characterization is disabled (using analytical delay models) (analytical_delay=False to simulate).
+[2026-09-14 23:27:05.468531] Only generating nominal corner timing.
+[2026-09-14 23:27:05.468753] Words per row: 1
+[2026-09-14 23:27:05.468998] Output files are: 
+[2026-09-14 23:27:05.470184] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.lvs
+[2026-09-14 23:27:05.470737] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.sp
+[2026-09-14 23:27:05.471062] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.v
+[2026-09-14 23:27:05.471327] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.lib
+[2026-09-14 23:27:05.471880] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.py
+[2026-09-14 23:27:05.472163] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.html
+[2026-09-14 23:27:05.472409] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.log
+[2026-09-14 23:27:05.472852] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.lef
+[2026-09-14 23:27:05.473260] /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.gds
+[2026-09-14 23:27:10.857534] ** Submodules: 5.3 seconds
+[2026-09-14 23:27:10.865329] ** Placement: 0.0 seconds
+[2026-09-14 23:37:10.746864] ** Routing: 599.9 seconds
+[2026-09-14 23:37:10.839610] ** Verification: 0.0 seconds
+[2026-09-14 23:37:10.839977] ** SRAM creation: 605.3 seconds
+[2026-09-14 23:37:10.840123] SP: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.sp
+[2026-09-14 23:37:11.035916] ** Spice writing: 0.2 seconds
+[2026-09-14 23:37:11.036381] DELAY: Writing stimulus...
+[2026-09-14 23:37:11.681615] ** DELAY: 0.6 seconds
+[2026-09-14 23:37:11.766236] GDS: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.gds
+[2026-09-14 23:37:12.219143] ** GDS: 0.5 seconds
+[2026-09-14 23:37:12.219594] LEF: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.lef
+[2026-09-14 23:37:12.253896] ** LEF: 0.0 seconds
+[2026-09-14 23:37:12.254322] LVS: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.lvs.sp
+[2026-09-14 23:37:12.339914] ** LVS writing: 0.1 seconds
+[2026-09-14 23:37:12.340432] LIB: Characterizing... 
+[2026-09-14 23:37:12.539797] WARNING: file lib.py: line 73: Using the option "use_specified_load_slew" will make load slew,data in lib file inaccurate.
+
+[2026-09-14 23:37:13.173554] ** Characterization: 0.8 seconds
+[2026-09-14 23:37:13.176939] Config: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.py
+[2026-09-14 23:37:13.177384] ** Config: 0.0 seconds
+[2026-09-14 23:37:13.189497] Datasheet: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.html
+[2026-09-14 23:37:13.195023] ** Datasheet: 0.0 seconds
+[2026-09-14 23:37:13.195487] Verilog: Writing to /home/eiad-hassan/OpenRAM/output_files/sram_8_64_sky130.v
+[2026-09-14 23:37:13.196341] ** Verilog: 0.0 seconds
+[2026-09-14 23:37:13.198537] ** End: 607.7 seconds
