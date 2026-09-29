@@ -38,8 +38,8 @@ simc:
 
 opt:
 ifndef IPAPPROX
-	# $(VOPT) +acc=npr -o vopt_tb tb_pulp -floatparameters+tb_pulp -work work
-	$(VOPT) +acc=npr -o vopt_tb tb_pulp -work work
+	# $(VOPT) +acc=npr -o vopt_tb tb_pulp -floatparameters+tb_pulp -work work 
+	$(VOPT) +acc=npr -o vopt_tb tb_pulp  -work work -suppress 2732
 else
 	$(mkfile_path)/tcl_files/rtl_vopt.tcl
 endif

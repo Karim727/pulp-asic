@@ -20,5 +20,19 @@
 
 # asic
 
-/asic/librelane/runs
+/asic/librelane/runs/
+*.odb
+*.spef
+*.nl.v
+*.gds
+*.lef
+*.def
+*.dot
+*.h.json
+*.pnl.v
+*.png
+*.sdf
+*.sp
+*.mag
 /asic/librelane/flist.yaml
+
