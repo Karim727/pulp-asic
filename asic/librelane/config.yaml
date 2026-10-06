@@ -10,14 +10,14 @@ SYNTH_SHARE_RESOURCES: true
 SYNTH_HIERARCHY_MODE: flatten
 ERROR_ON_SYNTH_CHECKS: false
 
-# Parameters from pulp_cluster.sv / core_region.sv
+# Parameters from pulp_cluster.sv -> core_region.sv
 SYNTH_PARAMETERS:
   - "PULP_CLUSTER=1"
   - "INSTR_RDATA_WIDTH=32"
-  - "N_EXT_PERF_COUNTERS=1"
+  - "N_EXT_PERF_COUNTERS=5"
   - "PULP_SECURE=0"
-  - "USE_PMP=0"
-  - "N_PMP_ENTRIES=0"
+  - "USE_PMP=1"
+  - "N_PMP_ENTRIES=16"
   - "FPU=1"
   - "Zfinx=0"
   - "FP_DIVSQRT=1"
@@ -32,6 +32,9 @@ SYNTH_PARAMETERS:
   - "APU_NDSFLAGS_CPU=15"
   - "APU_NUSFLAGS_CPU=5"
   - "DM_HaltAddress=32'h1A110800"
+  - "N_HWLP=2"
+  - "N_HWLP_BITS=1"
+  - "APU=1"
 # Target Defines
 VERILOG_DEFINES:
   - SYNTHESIS
@@ -45,10 +48,26 @@ LINTER_DISABLE_WARNINGS:
   - EOFNEWLINE
   - ENUMVALUE
   - BLKANDNBLK
-
 # Physical Design (Floorplan & Placement for Sky130)
 FP_SIZING: relative
 FP_CORE_UTIL: 30
 PL_TARGET_DENSITY_PCT: 45
-
+DRT_OPT_ITERS: 1 
 GRT_ADJUSTMENT: 0.25
+##################################
+# Macro configs
+##################################
+VERILOG_POWER_DEFINE: "USE_POWER_PINS"
+VDD_PIN: "power"
+GND_PIN: "ground"
+PDN_CORE_RING: true
+BOTTOM_MARGIN_MULT: 8
+TOP_MARGIN_MULT: 8
+RIGHT_MARGIN_MULT: 42
+LEFT_MARGIN_MULT: 42
+
+
+# CHECK AGAIN
+########################################
+# "MAGIC_GENERATE_LEF": false
+# "RUN_MAGIC": false
