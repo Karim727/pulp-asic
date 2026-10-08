@@ -9,16 +9,18 @@ TARGETS      ?= synthesis rtl verilator
 # Packages to generate filelists for.
 PACKAGES     ?= $(shell $(BENDER) packages 2>/dev/null)
 
-.PHONY: all help list-modules clean flist
+.PHONY: all help list-modules clean flist dse dse-dry
 
 all: flist
 
 help:
-	@echo "Bender Filelist Generator"
+	@echo "Bender Filelist Generator & DSE Automation"
 	@echo ""
 	@echo "Usage:"
 	@echo "  make <package_name>.yaml   Generate structured YAML filelist for any package"
 	@echo "  make flist                 Generate structured YAML for default PACKAGE ($(PACKAGE)) -> flist.yaml"
+	@echo "  make dse                   Run Design Space Exploration using DSE.py"
+	@echo "  make dse-dry               Preview DSE parameter combinations without executing"
 	@echo "  make list-modules          Show all available packages/dependencies"
 	@echo "  make clean                 Remove generated YAML files"
 
@@ -67,3 +69,10 @@ flist: $(OUT_DIR)
 clean:
 	@rm -f flist.yaml
 	@echo "Cleaned generated YAML filelists in '$(OUT_DIR)'."
+
+dse: flist
+	python3 DSE.py
+
+dse-dry: flist
+	python3 DSE.py --dry-run
+
