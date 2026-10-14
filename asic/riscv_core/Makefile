@@ -1,4 +1,2 @@
-PACKAGE   = cv32e40p
-
-
 include ../Makefile
+PACKAGE   = cv32e40p

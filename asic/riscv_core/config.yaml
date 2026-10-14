@@ -1,6 +1,6 @@
 DESIGN_NAME: riscv_core
 CLOCK_PORT: clk_i
-CLOCK_PERIOD: 50.0
+CLOCK_PERIOD: 20.0
 PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
 
 # Frontend
