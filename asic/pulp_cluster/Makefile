@@ -1,4 +1,2 @@
-PACKAGE   = pulp_cluster
-
-
 include ../Makefile
+PACKAGE   = pulp_cluster

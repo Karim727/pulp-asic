@@ -1,4 +1,2 @@
-PACKAGE   = pulp_soc
-
-
 include ../Makefile
+PACKAGE   = pulp_soc
