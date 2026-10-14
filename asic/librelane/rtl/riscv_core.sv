@@ -442,19 +442,19 @@ module riscv_core
   // main clock gate of the core
   // generates all clocks except the one for the debug unit which is
   // independent
-  //cluster_clock_gating core_clock_gate_i
-  //(
-   // .clk_i     ( clk_i           ),
-   // .en_i      ( clock_en        ),
-    //.test_en_i ( test_en_i       ),
-   // .clk_o     ( clk             )
-  //);
-sky130_fd_sc_hd__sdlclkp_4 core_clock_gate_i (
-    .CLK  ( clk_i     ),
-    .GATE ( clock_en  ),
-    .SCE  ( test_en_i ),
-    .GCLK ( clk       )
+  cluster_clock_gating core_clock_gate_i
+  (
+    .clk_i     ( clk_i           ),
+    .en_i      ( clock_en        ),
+    .test_en_i ( test_en_i       ),
+    .clk_o     ( clk             )
   );
+// sky130_fd_sc_hd__sdlclkp_4 core_clock_gate_i (
+//     .CLK  ( clk_i     ),
+//     .GATE ( clock_en  ),
+//     .SCE  ( test_en_i ),
+//     .GCLK ( clk       )
+//   );
   //////////////////////////////////////////////////
   //   ___ _____   ____ _____  _    ____ _____    //
   //  |_ _|  ___| / ___|_   _|/ \  / ___| ____|   //

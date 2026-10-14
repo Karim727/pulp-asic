@@ -11,6 +11,33 @@ SYNTH_HIERARCHY_MODE: flatten
 ERROR_ON_SYNTH_CHECKS: false
 SYNTH_STRATEGY: "AREA 2"
 SYNTH_ABC_BUFFERING: true
+# SYNTH_SIZING: true
+
+
+# Physical Design (Floorplan & Placement for Sky130)
+FP_SIZING: relative
+FP_CORE_UTIL: 30
+PL_TARGET_DENSITY_PCT: 45
+# DRT_OPT_ITERS: 1 
+GRT_ADJUSTMENT: 0.25
+##################################
+# Macro configs
+##################################
+VERILOG_POWER_DEFINE: "USE_POWER_PINS"
+VDD_PIN: "power"
+GND_PIN: "ground"
+PDN_CORE_RING: true
+BOTTOM_MARGIN_MULT: 8
+TOP_MARGIN_MULT: 8
+RIGHT_MARGIN_MULT: 42
+LEFT_MARGIN_MULT: 42
+
+
+# CHECK AGAIN
+########################################
+# "MAGIC_GENERATE_LEF": false
+# "RUN_MAGIC": false
+
 # Parameters from pulp_cluster.sv -> core_region.sv
 SYNTH_PARAMETERS:
   - "PULP_CLUSTER=1"
@@ -49,26 +76,3 @@ LINTER_DISABLE_WARNINGS:
   - EOFNEWLINE
   - ENUMVALUE
   - BLKANDNBLK
-# Physical Design (Floorplan & Placement for Sky130)
-FP_SIZING: relative
-FP_CORE_UTIL: 30
-PL_TARGET_DENSITY_PCT: 45
-# DRT_OPT_ITERS: 1 
-GRT_ADJUSTMENT: 0.25
-##################################
-# Macro configs
-##################################
-VERILOG_POWER_DEFINE: "USE_POWER_PINS"
-VDD_PIN: "power"
-GND_PIN: "ground"
-PDN_CORE_RING: true
-BOTTOM_MARGIN_MULT: 8
-TOP_MARGIN_MULT: 8
-RIGHT_MARGIN_MULT: 42
-LEFT_MARGIN_MULT: 42
-
-
-# CHECK AGAIN
-########################################
-# "MAGIC_GENERATE_LEF": false
-# "RUN_MAGIC": false
