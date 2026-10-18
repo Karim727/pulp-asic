@@ -1,0 +1,84 @@
+DESIGN_NAME: core_region
+CLOCK_PORT: clk_i
+CLOCK_PERIOD: 37.0
+PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
+# IO_PIN_ORDER_CFG: dir::pin_order.cfg
+# Frontend
+USE_SLANG: true
+# SLANG_ARGUMENTS: []
+
+# SYNTH_SHOW: true
+SYNTH_SHARE_RESOURCES: true
+SYNTH_HIERARCHY_MODE: flatten
+ERROR_ON_SYNTH_CHECKS: false
+SYNTH_STRATEGY: "AREA 2"
+SYNTH_ABC_BUFFERING: true
+# SYNTH_SIZING: true      # didn't have any effect
+
+
+# Physical Design (Floorplan & Placement for Sky130)
+FP_SIZING: relative
+FP_CORE_UTIL: 50
+PL_TARGET_DENSITY_PCT: 65
+RT_MAX_LAYER: met4
+PDN_MULTILAYER: false
+PDN_CORE_RING: false
+# CORE'S ASPECT RATIO IS SET TO 1 
+# L = 918.5 um
+# a pitch of 80um will create 11 stripes
+FP_PDN_HPITCH: 80.0    # 80 µm pitch for horizontal stripes
+FP_PDN_HOFFSET: 20.0   # Offset of the first horizontal stripe from the core edge
+FP_PDN_HWIDTH: 2.0     # Width of horizontal (met4) stripes
+FP_PDN_HSPACING: 3.0   # Horizontal stripe spacing
+# DRT_OPT_ITERS: 1
+GRT_ADJUSTMENT: 0.25
+##################################
+# Macro configs
+##################################
+VERILOG_POWER_DEFINE: "USE_POWER_PINS"
+VDD_PIN: "power"
+GND_PIN: "ground"
+# BOTTOM_MARGIN_MULT: 8
+# TOP_MARGIN_MULT: 8
+# RIGHT_MARGIN_MULT: 42
+# LEFT_MARGIN_MULT: 42
+
+
+# CHECK AGAIN
+########################################
+# "MAGIC_GENERATE_LEF": false
+# "RUN_MAGIC": false
+
+# Parameters from pulp_cluster.sv -> core_region.sv
+SYNTH_PARAMETERS:
+  - CORE_TYPE_CL=32'h00000000
+  - N_EXT_PERF_COUNTERS=32'h00000001
+  - CORE_ID=32'h00000007
+  - ADDR_WIDTH=32'h00000020
+  - DATA_WIDTH=32'h00000020
+  - INSTR_RDATA_WIDTH=32'h00000020
+  - CLUSTER_ALIAS_BASE=12'h000
+  - REMAP_ADDRESS=32'h00000001
+  - APU_NARGS_CPU=32'h00000003
+  - APU_WOP_CPU=32'h00000006
+  - WAPUTYPE=32'h00000003
+  - APU_NDSFLAGS_CPU=32'h0000000f
+  - APU_NUSFLAGS_CPU=32'h00000005
+  - FPU=32'h00000001
+  - FP_DIVSQRT=32'h00000001
+  - SHARED_FP=32'h00000002
+  - SHARED_FP_DIVSQRT=32'h00000002
+  - DEBUG_START_ADDR=32'h1a110000
+# Target Defines
+VERILOG_DEFINES:
+  - SYNTHESIS
+  - TARGET_SYNTHESIS
+  - TARGET_RTL
+  - VERILATOR
+
+# Lint settings
+LINTER_DISABLE_WARNINGS:
+  - DECLFILENAME
+  - EOFNEWLINE
+  - ENUMVALUE
+  - BLKANDNBLK

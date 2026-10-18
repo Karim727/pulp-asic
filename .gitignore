@@ -20,7 +20,7 @@
 
 # asic
 
-/asic/librelane/runs/
+runs/
 *.odb
 *.spef
 *.nl.v
@@ -34,5 +34,5 @@
 *.sdf
 *.sp
 *.mag
-/asic/librelane/flist.yaml
+flist.yaml
 
