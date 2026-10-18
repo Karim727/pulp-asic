@@ -854,7 +854,10 @@ module pulp_cluster
       );
 
 
-      core_region #(
+      assign s_hci_core[i].boffs = '0;
+      assign s_hci_core[i].lrdy  = '1;
+
+      core_region_wrap #(
         .CORE_TYPE_CL        ( CORE_TYPE_CL       ),
         .CORE_ID             ( i                  ),
         .ADDR_WIDTH          ( 32                 ),
@@ -873,6 +876,10 @@ module pulp_cluster
         .SHARED_FP           ( CLUST_SHARED_FP         ),
         .SHARED_FP_DIVSQRT   ( CLUST_SHARED_FP_DIVSQRT )
       ) core_region_i (
+`ifdef USE_POWER_PINS
+        .power               ( power                 ),
+        .ground              ( ground                ),
+`endif
         .clk_i               ( clk_cluster           ),
         .rst_ni              ( s_rst_n               ),
         .base_addr_i         ( base_addr_i           ),
@@ -904,12 +911,49 @@ module pulp_cluster
         //.debug_core_halted_o ( dbg_core_halted[i]    ),
         //.debug_core_halt_i   ( dbg_core_halt[i]      ),
         //.debug_core_resume_i ( dbg_core_resume[i]    ),
-        .tcdm_data_master    ( s_hci_core[i]         ),
 
-        //tcdm, dma ctrl unit, periph interco interfaces
-        .dma_ctrl_master     ( s_core_dmactrl_bus[i] ),
-        .eu_ctrl_master      ( s_core_euctrl_bus[i]  ),
-        .periph_data_master  ( s_core_periph_bus[i]  ),
+        // TCDM Master (discrete ports for HCI)
+        .tcdm_data_req_o     ( s_hci_core[i].req     ),
+        .tcdm_data_gnt_i     ( s_hci_core[i].gnt     ),
+        .tcdm_data_add_o     ( s_hci_core[i].add     ),
+        .tcdm_data_wen_o     ( s_hci_core[i].wen     ),
+        .tcdm_data_wdata_o   ( s_hci_core[i].data    ),
+        .tcdm_data_be_o      ( s_hci_core[i].be      ),
+        .tcdm_data_r_rdata_i ( s_hci_core[i].r_data  ),
+        .tcdm_data_r_valid_i ( s_hci_core[i].r_valid ),
+
+        // DMA Controller Master
+        .dma_ctrl_req_o      ( s_core_dmactrl_bus[i].req     ),
+        .dma_ctrl_add_o      ( s_core_dmactrl_bus[i].add     ),
+        .dma_ctrl_wen_o      ( s_core_dmactrl_bus[i].wen     ),
+        .dma_ctrl_wdata_o    ( s_core_dmactrl_bus[i].wdata   ),
+        .dma_ctrl_be_o       ( s_core_dmactrl_bus[i].be      ),
+        .dma_ctrl_gnt_i      ( s_core_dmactrl_bus[i].gnt     ),
+        .dma_ctrl_r_valid_i  ( s_core_dmactrl_bus[i].r_valid ),
+        .dma_ctrl_r_rdata_i  ( s_core_dmactrl_bus[i].r_rdata ),
+        .dma_ctrl_r_opc_i    ( s_core_dmactrl_bus[i].r_opc   ),
+
+        // Event Unit Controller Master
+        .eu_ctrl_req_o       ( s_core_euctrl_bus[i].req     ),
+        .eu_ctrl_add_o       ( s_core_euctrl_bus[i].add     ),
+        .eu_ctrl_wen_o       ( s_core_euctrl_bus[i].wen     ),
+        .eu_ctrl_wdata_o     ( s_core_euctrl_bus[i].wdata   ),
+        .eu_ctrl_be_o        ( s_core_euctrl_bus[i].be      ),
+        .eu_ctrl_gnt_i       ( s_core_euctrl_bus[i].gnt     ),
+        .eu_ctrl_r_valid_i   ( s_core_euctrl_bus[i].r_valid ),
+        .eu_ctrl_r_rdata_i   ( s_core_euctrl_bus[i].r_rdata ),
+        .eu_ctrl_r_opc_i     ( s_core_euctrl_bus[i].r_opc   ),
+
+        // Peripheral Data Master
+        .periph_data_req_o   ( s_core_periph_bus[i].req     ),
+        .periph_data_add_o   ( s_core_periph_bus[i].add     ),
+        .periph_data_wen_o   ( s_core_periph_bus[i].wen     ),
+        .periph_data_wdata_o ( s_core_periph_bus[i].wdata   ),
+        .periph_data_be_o    ( s_core_periph_bus[i].be      ),
+        .periph_data_gnt_i   ( s_core_periph_bus[i].gnt     ),
+        .periph_data_r_valid_i( s_core_periph_bus[i].r_valid ),
+        .periph_data_r_rdata_i( s_core_periph_bus[i].r_rdata ),
+        .periph_data_r_opc_i ( s_core_periph_bus[i].r_opc   ),
       
         .fregfile_disable_i  (  s_fregfile_disable     )
 `ifdef SHARED_FPU_CLUSTER
