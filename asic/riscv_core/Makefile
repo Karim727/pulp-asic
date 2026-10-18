@@ -1,7 +1,5 @@
 include ../Makefile
-<<<<<<< HEAD
 PACKAGE   = cv32e40p
-=======
 
 CLUSTER_DIR := $(abspath $(CURDIR)/../../.bender/git/checkouts/pulp_cluster-48721e3ce381c984)
 PULP_RTL_INCLUDES := $(abspath $(CURDIR)/../../rtl/includes)

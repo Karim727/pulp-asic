@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 DESIGN_NAME: riscv_core
 CLOCK_PORT: clk_i
 CLOCK_PERIOD: 20.0

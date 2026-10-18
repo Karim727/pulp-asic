@@ -854,14 +854,11 @@ module pulp_cluster
       );
 
 
-<<<<<<< HEAD
       core_region #(
-=======
       assign s_hci_core[i].boffs = '0;
       assign s_hci_core[i].lrdy  = '1;
 
       core_region_wrap #(
->>>>>>> pd/riscv-macro
         .CORE_TYPE_CL        ( CORE_TYPE_CL       ),
         .CORE_ID             ( i                  ),
         .ADDR_WIDTH          ( 32                 ),
@@ -880,8 +877,6 @@ module pulp_cluster
         .SHARED_FP           ( CLUST_SHARED_FP         ),
         .SHARED_FP_DIVSQRT   ( CLUST_SHARED_FP_DIVSQRT )
       ) core_region_i (
-<<<<<<< HEAD
-=======
 `ifdef USE_POWER_PINS
         .power               ( power                 ),
         .ground              ( ground                ),
@@ -918,14 +913,12 @@ module pulp_cluster
         //.debug_core_halted_o ( dbg_core_halted[i]    ),
         //.debug_core_halt_i   ( dbg_core_halt[i]      ),
         //.debug_core_resume_i ( dbg_core_resume[i]    ),
-<<<<<<< HEAD
         .tcdm_data_master    ( s_hci_core[i]         ),
 
         //tcdm, dma ctrl unit, periph interco interfaces
         .dma_ctrl_master     ( s_core_dmactrl_bus[i] ),
         .eu_ctrl_master      ( s_core_euctrl_bus[i]  ),
         .periph_data_master  ( s_core_periph_bus[i]  ),
-=======
 
         // TCDM Master (discrete ports for HCI)
         .tcdm_data_req_o     ( s_hci_core[i].req     ),
