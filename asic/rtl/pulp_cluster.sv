@@ -854,7 +854,6 @@ module pulp_cluster
       );
 
 
-      core_region #(
       assign s_hci_core[i].boffs = '0;
       assign s_hci_core[i].lrdy  = '1;
 
@@ -881,7 +880,6 @@ module pulp_cluster
         .power               ( power                 ),
         .ground              ( ground                ),
 `endif
->>>>>>> pd/riscv-macro
         .clk_i               ( clk_cluster           ),
         .rst_ni              ( s_rst_n               ),
         .base_addr_i         ( base_addr_i           ),
@@ -913,12 +911,6 @@ module pulp_cluster
         //.debug_core_halted_o ( dbg_core_halted[i]    ),
         //.debug_core_halt_i   ( dbg_core_halt[i]      ),
         //.debug_core_resume_i ( dbg_core_resume[i]    ),
-        .tcdm_data_master    ( s_hci_core[i]         ),
-
-        //tcdm, dma ctrl unit, periph interco interfaces
-        .dma_ctrl_master     ( s_core_dmactrl_bus[i] ),
-        .eu_ctrl_master      ( s_core_euctrl_bus[i]  ),
-        .periph_data_master  ( s_core_periph_bus[i]  ),
 
         // TCDM Master (discrete ports for HCI)
         .tcdm_data_req_o     ( s_hci_core[i].req     ),
@@ -962,7 +954,6 @@ module pulp_cluster
         .periph_data_r_valid_i( s_core_periph_bus[i].r_valid ),
         .periph_data_r_rdata_i( s_core_periph_bus[i].r_rdata ),
         .periph_data_r_opc_i ( s_core_periph_bus[i].r_opc   ),
->>>>>>> pd/riscv-macro
       
         .fregfile_disable_i  (  s_fregfile_disable     )
 `ifdef SHARED_FPU_CLUSTER

@@ -1,5 +1,4 @@
 include ../Makefile
-PACKAGE   = cv32e40p
 
 CLUSTER_DIR := $(abspath $(CURDIR)/../../.bender/git/checkouts/pulp_cluster-48721e3ce381c984)
 PULP_RTL_INCLUDES := $(abspath $(CURDIR)/../../rtl/includes)
@@ -38,4 +37,3 @@ flist: $(OUT_DIR)
 	      if (!seen_v[extra[i]]++) print "  - " extra[i]; \
 	    } \
 	  }' > $(OUT_DIR)/flist.yaml
->>>>>>> pd/riscv-macro
