@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 current_design riscv_core
+=======
+if { [info exists ::env(DESIGN_NAME)] } {
+    current_design $::env(DESIGN_NAME)
+} else {
+    current_design core_region
+}
+>>>>>>> pd/riscv-macro
 
 # -----------------------------------------------------------------------------
 # 1. Clock Definition

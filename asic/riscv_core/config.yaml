@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 DESIGN_NAME: riscv_core
 CLOCK_PORT: clk_i
 CLOCK_PERIOD: 20.0
@@ -5,20 +6,50 @@ PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
 
 # Frontend
 USE_SLANG: true
+=======
+DESIGN_NAME: core_region_wrap
+CLOCK_PORT: clk_i
+CLOCK_PERIOD: 37.0
+PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
+# IO_PIN_ORDER_CFG: dir::pin_order.cfg
+# Frontend
+USE_SLANG: true
+
+>>>>>>> pd/riscv-macro
 # SYNTH_SHOW: true
 SYNTH_SHARE_RESOURCES: true
 SYNTH_HIERARCHY_MODE: flatten
 ERROR_ON_SYNTH_CHECKS: false
 SYNTH_STRATEGY: "AREA 2"
 SYNTH_ABC_BUFFERING: true
+<<<<<<< HEAD
 # SYNTH_SIZING: true
+=======
+# SYNTH_SIZING: true      # didn't have any effect
+>>>>>>> pd/riscv-macro
 
 
 # Physical Design (Floorplan & Placement for Sky130)
 FP_SIZING: relative
+<<<<<<< HEAD
 FP_CORE_UTIL: 30
 PL_TARGET_DENSITY_PCT: 45
 # DRT_OPT_ITERS: 1 
+=======
+FP_CORE_UTIL: 50
+PL_TARGET_DENSITY_PCT: 65
+RT_MAX_LAYER: met4
+PDN_MULTILAYER: false
+PDN_CORE_RING: false
+# CORE'S ASPECT RATIO IS SET TO 1 
+# L = 918.5 um
+# a pitch of 80um will create 11 stripes
+FP_PDN_HPITCH: 80.0    # 80 µm pitch for horizontal stripes
+FP_PDN_HOFFSET: 20.0   # Offset of the first horizontal stripe from the core edge
+FP_PDN_HWIDTH: 2.0     # Width of horizontal (met4) stripes
+FP_PDN_HSPACING: 3.0   # Horizontal stripe spacing
+# DRT_OPT_ITERS: 1
+>>>>>>> pd/riscv-macro
 GRT_ADJUSTMENT: 0.25
 ##################################
 # Macro configs
@@ -26,11 +57,18 @@ GRT_ADJUSTMENT: 0.25
 VERILOG_POWER_DEFINE: "USE_POWER_PINS"
 VDD_PIN: "power"
 GND_PIN: "ground"
+<<<<<<< HEAD
 PDN_CORE_RING: true
 BOTTOM_MARGIN_MULT: 8
 TOP_MARGIN_MULT: 8
 RIGHT_MARGIN_MULT: 42
 LEFT_MARGIN_MULT: 42
+=======
+# BOTTOM_MARGIN_MULT: 8
+# TOP_MARGIN_MULT: 8
+# RIGHT_MARGIN_MULT: 42
+# LEFT_MARGIN_MULT: 42
+>>>>>>> pd/riscv-macro
 
 
 # CHECK AGAIN
@@ -40,6 +78,7 @@ LEFT_MARGIN_MULT: 42
 
 # Parameters from pulp_cluster.sv -> core_region.sv
 SYNTH_PARAMETERS:
+<<<<<<< HEAD
   - "PULP_CLUSTER=1"
   - "INSTR_RDATA_WIDTH=32"
   - "N_EXT_PERF_COUNTERS=5"
@@ -63,6 +102,26 @@ SYNTH_PARAMETERS:
   - "N_HWLP=2"
   - "N_HWLP_BITS=1"
   - "APU=1"
+=======
+  - CORE_TYPE_CL=32'h00000000
+  - N_EXT_PERF_COUNTERS=32'h00000001
+  - CORE_ID=32'h00000007
+  - ADDR_WIDTH=32'h00000020
+  - DATA_WIDTH=32'h00000020
+  - INSTR_RDATA_WIDTH=32'h00000020
+  - CLUSTER_ALIAS_BASE=12'h000
+  - REMAP_ADDRESS=32'h00000001
+  - APU_NARGS_CPU=32'h00000003
+  - APU_WOP_CPU=32'h00000006
+  - WAPUTYPE=32'h00000003
+  - APU_NDSFLAGS_CPU=32'h0000000f
+  - APU_NUSFLAGS_CPU=32'h00000005
+  - FPU=32'h00000001
+  - FP_DIVSQRT=32'h00000001
+  - SHARED_FP=32'h00000002
+  - SHARED_FP_DIVSQRT=32'h00000002
+  - DEBUG_START_ADDR=32'h1a110000
+>>>>>>> pd/riscv-macro
 # Target Defines
 VERILOG_DEFINES:
   - SYNTHESIS
