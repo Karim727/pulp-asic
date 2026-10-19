@@ -59,7 +59,7 @@ module core_region_wrap
 
   input logic [5:0]                      cluster_id_i,
   input logic [3:0]                      core_id_i = CORE_ID[3:0],
-  
+
   input logic                            irq_req_i,
   output logic                           irq_ack_o,
   input logic [4:0]                      irq_id_i,
