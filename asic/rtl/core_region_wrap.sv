@@ -58,6 +58,7 @@ module core_region_wrap
   input logic [3:0]                      base_addr_i, // FOR CLUSTER VIRTUALIZATION
 
   input logic [5:0]                      cluster_id_i,
+  input logic [3:0]                      core_id_i = CORE_ID[3:0],
   
   input logic                            irq_req_i,
   output logic                           irq_ack_o,
@@ -244,6 +245,7 @@ module core_region_wrap
     .init_ni             ( init_ni             ),
     .base_addr_i         ( base_addr_i         ),
     .cluster_id_i        ( cluster_id_i        ),
+    .core_id_i           ( core_id_i           ),
     .irq_req_i           ( irq_req_i           ),
     .irq_ack_o           ( irq_ack_o           ),
     .irq_id_i            ( irq_id_i            ),

@@ -65,6 +65,7 @@ module core_region
   input logic [3:0]                      base_addr_i, // FOR CLUSTER VIRTUALIZATION
 
   input logic [5:0]                      cluster_id_i,
+  input logic [3:0]                      core_id_i = CORE_ID[3:0],
   
   input logic                            irq_req_i,
   output logic                           irq_ack_o,
@@ -182,7 +183,7 @@ module core_region
     .clk_o     ( clk_int     )
   );
 
-  assign hart_id = {21'b0, cluster_id_i[5:0], 1'b0, CORE_ID[3:0]};
+  assign hart_id = {21'b0, cluster_id_i[5:0], 1'b0, core_id_i[3:0]};
 
 `ifndef APU_CLUSTER
  `ifndef SHARED_FPU_CLUSTER
@@ -235,7 +236,7 @@ module core_region
         .test_en_i             ( test_mode_i       ),
 
         .boot_addr_i           ( boot_addr         ),
-        .core_id_i             ( CORE_ID[3:0]      ),
+        .core_id_i             ( core_id_i[3:0]      ),
         .cluster_id_i          ( cluster_id_i      ),
 
         .instr_addr_o          ( instr_addr_o             ),
