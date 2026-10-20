@@ -1,0 +1,72 @@
+DESIGN_NAME: pulp_soc
+CLOCK_PORT: slow_clk_i
+CLOCK_PERIOD: 50.0
+#PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
+
+# Frontend
+USE_SLANG: true
+# SYNTH_SHOW: true
+SYNTH_SHARE_RESOURCES: true
+SYNTH_HIERARCHY_MODE: flatten
+#ERROR_ON_SYNTH_CHECKS: false
+#SYNTH_STRATEGY: "AREA 2"
+#SYNTH_ABC_BUFFERING: true
+# SYNTH_SIZING: true
+
+
+# Physical Design (Floorplan & Placement for Sky130)
+FP_SIZING: relative
+FP_CORE_UTIL: 30
+PL_TARGET_DENSITY_PCT: 45
+# DRT_OPT_ITERS: 1 
+GRT_ADJUSTMENT: 0.25
+##################################
+# Macro configs
+##################################
+VERILOG_POWER_DEFINE: "USE_POWER_PINS"
+VDD_PIN: "power"
+GND_PIN: "ground"
+PDN_CORE_RING: true
+BOTTOM_MARGIN_MULT: 8
+TOP_MARGIN_MULT: 8
+RIGHT_MARGIN_MULT: 42
+LEFT_MARGIN_MULT: 42
+
+
+# CHECK AGAIN
+########################################
+# "MAGIC_GENERATE_LEF": false
+# "RUN_MAGIC": false
+
+# Parameters from pulp_cluster.sv -> core_region.sv
+SYNTH_PARAMETERS:
+- "CORE_TYPE=0"
+- "USE_FPU=1"
+- "USE_HWPE=1"
+- "NB_CORES=32'h00000008"
+- "AXI_ADDR_WIDTH=32"
+- "AXI_DATA_IN_WIDTH=32'h00000040"
+- "AXI_DATA_OUT_WIDTH=32'h00000020"
+- "AXI_ID_IN_WIDTH=32'h00000007"
+- "AXI_USER_WIDTH=32'h00000006"
+- "EVNT_WIDTH=32'h00000008"
+- "NGPIO=32'h00000020"
+- "NPAD=32'h00000040"
+- "NBIT_PADCFG=32'h00000006"
+- "NBIT_PADMUX=32'h00000002"
+- "N_UART=32'h00000001"
+- "N_SPI=32'h00000001"
+- "N_I2C=32'h00000002"
+# Target Defines
+VERILOG_DEFINES:
+  - SYNTHESIS
+  - TARGET_SYNTHESIS
+  - TARGET_RTL
+  - VERILATOR
+
+# Lint settings
+LINTER_DISABLE_WARNINGS:
+  - DECLFILENAME
+  - EOFNEWLINE
+  - ENUMVALUE
+  - BLKANDNBLK
