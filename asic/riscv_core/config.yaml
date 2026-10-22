@@ -1,6 +1,6 @@
 DESIGN_NAME: core_region_wrap
 CLOCK_PORT: clk_i
-CLOCK_PERIOD: 37.0
+CLOCK_PERIOD: 37
 PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
 IO_PIN_ORDER_CFG: dir::pin_order.cfg
 # Frontend
@@ -17,15 +17,15 @@ SYNTH_ABC_BUFFERING: true
 
 # Physical Design (Floorplan & Placement for Sky130)
 FP_SIZING: relative
-FP_CORE_UTIL: 50
-PL_TARGET_DENSITY_PCT: 65
+FP_CORE_UTIL: 40
+PL_TARGET_DENSITY_PCT: 55
 RT_MAX_LAYER: met4
 PDN_MULTILAYER: false
 PDN_CORE_RING: false
 # CORE'S ASPECT RATIO IS SET TO 1 
 # L = 918.5 um
 # a pitch of 80um will create 11 stripes
-PDN_VPITCH: 80.0    # 80 µm pitch for horizontal stripes
+PDN_VPITCH: 120    # 80 µm pitch for horizontal stripes
 PDN_VOFFSET: 20.0   # Offset of the first horizontal stripe from the core edge
 PDN_VWIDTH: 4.0     # Width of horizontal (met4) stripes
 PDN_VSPACING: 3.0   # Horizontal stripe spacing

@@ -2,7 +2,11 @@
 # Bender Module & Filelist Automation Makefile
 # ==============================================================================
 PACKAGE      ?= cv32e40p
-BENDER       ?= ../../bender
+# Find bender: sibling checkout next to the repo root, otherwise the installed binary on PATH.
+BENDER       ?= $(shell if [ -x ../bender ]; then echo ../bender; \
+	elif [ -x ../../bender ]; then echo ../../bender; \
+	elif command -v bender >/dev/null 2>&1; then command -v bender; \
+	else echo bender; fi)
 OUT_DIR      ?= .
 TARGETS      ?= synthesis rtl verilator
 
