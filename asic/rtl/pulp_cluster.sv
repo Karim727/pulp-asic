@@ -886,6 +886,7 @@ module pulp_cluster
 
         .init_ni             ( s_init_n              ),
         .cluster_id_i        ( cluster_id_i          ),
+        .core_id_i           ( 4'(i)                 ),
         .clock_en_i          ( clk_core_en[i]        ),
         .fetch_en_i          ( fetch_en_int[i]       ),
        

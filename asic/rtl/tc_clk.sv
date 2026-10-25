@@ -52,9 +52,9 @@ module tc_clk_gating #(
 
 sky130_fd_sc_hd__sdlclkp_4 sky130_ICG_i (
     .CLK  ( clk_i     ),
-    .GATE ( en_i  ),
-    // .SCE  ( test_en_i ),
-    .GCLK ( clk_o       )
+    .GATE ( en_i      ),
+    .SCE  ( test_en_i ),
+    .GCLK ( clk_o     )
   );
   
 endmodule

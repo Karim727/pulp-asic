@@ -11,7 +11,6 @@ set clock_period $::env(CLOCK_PERIOD)
 create_clock -name clk_i -period $clock_period [get_ports clk_i]
 set_clock_uncertainty 0.25 [get_clocks clk_i]
 set_clock_transition 0.15 [get_clocks clk_i]
-# set_propagated_clock [all_clocks]
 #create_generated_clock -name clk_gated \ 
 #    -source [get_ports clk_i] \
    # -divide_by 1 \
@@ -34,7 +33,7 @@ set_timing_derate -late  1.05
 set_false_path -from [get_ports rst_ni]
 
 # Quasi-static configuration signals tied off or rarely switched in cluster
-# set_false_path -from [get_ports {boot_addr_i* core_id_i* cluster_id_i* fetch_enable_i clock_en_i test_en_i fregfile_disable_i ext_perf_counters_i*}]
+set_false_path -from [get_ports -quiet {boot_addr_i* core_id_i* cluster_id_i* base_addr_i* fregfile_disable_i test_mode_i}]
 
 # Status outputs to cluster controller
 # set_false_path -to [get_ports {core_busy_o sec_lvl_o}]
