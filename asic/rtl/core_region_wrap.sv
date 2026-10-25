@@ -17,7 +17,6 @@
 `include "pulp_soc_defines.sv"
 `include "periph_bus_defines.sv"
 
-(*blackbox*)
 module core_region_wrap
 #(
   // CORE PARAMETERS
