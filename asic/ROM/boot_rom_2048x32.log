@@ -1,0 +1,38 @@
+[2026-10-24 23:35:50.293096] |==============================================================================|
+[2026-10-24 23:35:50.293167] |=========                      OpenRAM v1.2.49                       =========|
+[2026-10-24 23:35:50.293193] |=========                                                            =========|
+[2026-10-24 23:35:50.293210] |=========               VLSI Design and Automation Lab               =========|
+[2026-10-24 23:35:50.293223] |=========        Computer Science and Engineering Department         =========|
+[2026-10-24 23:35:50.293236] |=========            University of California Santa Cruz             =========|
+[2026-10-24 23:35:50.293249] |=========                                                            =========|
+[2026-10-24 23:35:50.293262] |=========          Usage help: openram-user-group@ucsc.edu           =========|
+[2026-10-24 23:35:50.293274] |=========        Development help: openram-dev-group@ucsc.edu        =========|
+[2026-10-24 23:35:50.293286] |=========                See LICENSE for license info                =========|
+[2026-10-24 23:35:50.293298] |==============================================================================|
+[2026-10-24 23:35:50.293316] ** Start: 10/24/2026 23:35:50
+[2026-10-24 23:35:50.293335] Output files are: 
+[2026-10-24 23:35:50.293349] /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.sp
+[2026-10-24 23:35:50.293362] /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.v
+[2026-10-24 23:35:50.293375] /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.lef
+[2026-10-24 23:35:50.293388] /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.gds
+[2026-10-24 23:35:50.300391] create rom of word size 4 with 2048 num of words
+[2026-10-24 23:45:56.656618] ** Submodules: 606.4 seconds
+[2026-10-24 23:45:56.657065] ** Placement: 0.0 seconds
+[2026-10-24 23:47:59.016295] ** Routing: 122.4 seconds
+[2026-10-25 00:10:20.125178] WARNING: file magic.py: line 254: DRC Errors boot_rom_2048x32	1984
+
+[2026-10-25 00:10:29.160480] ** Verification: 1350.1 seconds
+[2026-10-25 00:10:29.160759] ** ROM creation: 2078.9 seconds
+[2026-10-25 00:10:29.160923] SP: Writing to /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.sp
+[2026-10-25 00:10:29.596483] ** Spice writing: 0.4 seconds
+[2026-10-25 00:10:29.596571] GDS: Writing to /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.gds
+[2026-10-25 00:10:30.039244] ** GDS: 0.4 seconds
+[2026-10-25 00:10:30.039311] LEF: Writing to /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.lef
+[2026-10-25 00:10:30.040299] ** LEF: 0.0 seconds
+[2026-10-25 00:10:30.040326] LVS: Writing to /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.lvs.sp
+[2026-10-25 00:10:30.484735] ** LVS writing: 0.4 seconds
+[2026-10-25 00:10:30.485003] Config: Writing to /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.py
+[2026-10-25 00:10:30.485033] ** Config: 0.0 seconds
+[2026-10-25 00:10:30.485051] Verilog: Writing to /home/eiad-hassan/OpenRAM/macros/rom_configs/boot_rom_2048x32/boot_rom_2048x32.v
+[2026-10-25 00:10:30.485116] ** Verilog: 0.0 seconds
+[2026-10-25 00:10:30.491990] ** End: 2080.2 seconds
