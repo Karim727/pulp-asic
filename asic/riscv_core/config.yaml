@@ -2,9 +2,12 @@ DESIGN_NAME: core_region_wrap
 CLOCK_PORT: clk_i
 CLOCK_PERIOD: 37
 PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
+SIGNOFF_SDC_FILE: dir::riscv_core_signoff.sdc
 IO_PIN_ORDER_CFG: dir::pin_order.cfg
 # Frontend
 USE_SLANG: true
+SLANG_ARGUMENTS: 
+  - "--keep-hierarchy"
 
 # SYNTH_SHOW: true
 SYNTH_SHARE_RESOURCES: true
@@ -13,25 +16,32 @@ ERROR_ON_SYNTH_CHECKS: false
 SYNTH_STRATEGY: "AREA 2"
 SYNTH_ABC_BUFFERING: true
 # SYNTH_SIZING: true      # didn't have any effect
-
+SYNTH_KEEP_HIERARCHY_MODULES: 
+  - "*periph_demux*"
+  - "*riscv_core*"
+  - "*core_demux*"
 
 # Physical Design (Floorplan & Placement for Sky130)
 FP_SIZING: relative
 FP_CORE_UTIL: 40
-PL_TARGET_DENSITY_PCT: 55
+PL_TARGET_DENSITY_PCT: 50
 RT_MAX_LAYER: met4
 PDN_MULTILAYER: false
 PDN_CORE_RING: false
 # CORE'S ASPECT RATIO IS SET TO 1 
 # L = 918.5 um
 # a pitch of 80um will create 11 stripes
-PDN_VPITCH: 120    # 80 µm pitch for horizontal stripes
+PDN_VPITCH: 120   # 80 µm pitch for horizontal stripes
 PDN_VOFFSET: 20.0   # Offset of the first horizontal stripe from the core edge
 PDN_VWIDTH: 4.0     # Width of horizontal (met4) stripes
 PDN_VSPACING: 3.0   # Horizontal stripe spacing
 PDN_HORIZONTAL_HALO: 50
 PDN_VERTICAL_HALO:   20
 # DRT_OPT_ITERS: 1
+GRT_ANTENNA_REPAIR_ITERS: 7
+# Must be mulitples of 0.38 "minimum width for std cell"
+# GPL_CELL_PADDING:
+# DPL_CELL_PADDING: 
 GRT_ADJUSTMENT: 0.25
 ##################################
 # Macro configs

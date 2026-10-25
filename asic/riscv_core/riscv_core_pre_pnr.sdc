@@ -11,7 +11,6 @@ set clock_period $::env(CLOCK_PERIOD)
 create_clock -name clk_i -period $clock_period [get_ports clk_i]
 set_clock_uncertainty 0.25 [get_clocks clk_i]
 set_clock_transition 0.15 [get_clocks clk_i]
-# set_propagated_clock [all_clocks]
 #create_generated_clock -name clk_gated \ 
 #    -source [get_ports clk_i] \
    # -divide_by 1 \
