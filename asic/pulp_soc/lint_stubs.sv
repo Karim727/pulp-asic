@@ -1,7 +1,7 @@
 // Lint-only black-box stubs for pulp_soc (no synthesis, no P&R).
 // Sources: soc_clk_rst_gen.sv:76,99,121 (gf22_FLL),
 // memory_models.sv:121-296 (generic_memory), boot_rom.sv:43 (generic_rom).
-
+(* blackbox *)
 module gf22_FLL (
   output logic        FLLCLK,
   input  logic        FLLOE,
@@ -30,7 +30,7 @@ module gf22_FLL (
   assign TQ     = '0;
   assign JTQ    = '0;
 endmodule
-
+(* blackbox *)
 module generic_memory #(
   parameter ADDR_WIDTH = 12,
   parameter DATA_WIDTH = 32,
@@ -47,7 +47,7 @@ module generic_memory #(
 );
   assign Q = '0;
 endmodule
-
+/*(* blackbox *)
 module generic_rom #(
   parameter ADDR_WIDTH = 32,
   parameter DATA_WIDTH = 32
@@ -58,4 +58,4 @@ module generic_rom #(
   output logic [DATA_WIDTH-1:0] Q
 );
   assign Q = '0;
-endmodule
+endmodule*/

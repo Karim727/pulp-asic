@@ -1,6 +1,8 @@
 DESIGN_NAME: pulp_soc
 CLOCK_PORT: slow_clk_i
 CLOCK_PERIOD: 50.0
+#PDK: sky130
+#PDK_VERSION: 8afc8346a57fe1ab7934ba5a6056ea8b43078e71
 #PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
 
 # Frontend

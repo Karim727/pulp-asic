@@ -11,6 +11,7 @@ flist:
 	grep -q "$(EXTRA_INCDIR)" flist.yaml || sed -i '/^VERILOG_INCLUDE_DIRS:/a\  - $(EXTRA_INCDIR)' flist.yaml
 	grep -q "lint_stubs.sv" flist.yaml || echo "  - $(abspath lint_stubs.sv)" >> flist.yaml
 	grep -q "jtag_tap_top.sv" flist.yaml || echo "  - $(abspath ../../rtl/pulp/jtag_tap_top.sv)" >> flist.yaml
+	grep -q "asic/pulp_soc/rtl/soc_interconnect.sv" flist.yaml || echo "  - $(abspath rtl/soc_interconnect.sv)" >> flist.yaml
 	sed -i 's|^\( *- \).*/udma_subsystem/udma_subsystem\.sv$$|\1$(abspath rtl/udma_subsystem.sv)|' flist.yaml
 
 # forward every other target to the parent Makefile

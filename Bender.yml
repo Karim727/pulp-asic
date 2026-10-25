@@ -78,6 +78,9 @@ sources:
 
   - rtl/pulp/cluster_domain.sv
   - rtl/pulp/jtag_tap_top.sv
+  - rtl/pulp/gf22_FLL.sv
+  - asic/pulp_soc/rtl/soc_interconnect.sv
+  - rtl/pulp/generic_rom.sv
   - rtl/pulp/pad_control.sv
   - rtl/pulp/pad_frame.sv
   - rtl/pulp/rtc_clock.sv
