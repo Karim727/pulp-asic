@@ -1,0 +1,60 @@
+[2026-09-23 19:53:52.486437] |==============================================================================|
+[2026-09-23 19:53:52.486925] |=========                      OpenRAM v1.2.49                       =========|
+[2026-09-23 19:53:52.487135] |=========                                                            =========|
+[2026-09-23 19:53:52.487381] |=========               VLSI Design and Automation Lab               =========|
+[2026-09-23 19:53:52.487565] |=========        Computer Science and Engineering Department         =========|
+[2026-09-23 19:53:52.487717] |=========            University of California Santa Cruz             =========|
+[2026-09-23 19:53:52.487871] |=========                                                            =========|
+[2026-09-23 19:53:52.488019] |=========          Usage help: openram-user-group@ucsc.edu           =========|
+[2026-09-23 19:53:52.490188] |=========        Development help: openram-dev-group@ucsc.edu        =========|
+[2026-09-23 19:53:52.490527] |=========                See LICENSE for license info                =========|
+[2026-09-23 19:53:52.490931] |==============================================================================|
+[2026-09-23 19:53:52.491233] ** Start: 09/23/2026 19:53:52
+[2026-09-23 19:53:52.491467] Technology: sky130
+[2026-09-23 19:53:52.491658] Total size: 32768 bits
+[2026-09-23 19:53:52.491872] Word size: 32
+Words: 1024
+Banks: 1
+[2026-09-23 19:53:52.492051] Write size: 8
+[2026-09-23 19:53:52.492300] RW ports: 1
+R-only ports: 0
+W-only ports: 0
+[2026-09-23 19:53:52.492501] DRC/LVS/PEX is only run on the top-level design to save run-time (inline_lvsdrc=True to do inline checking).
+[2026-09-23 19:53:52.492823] DRC/LVS/PEX is disabled (check_lvsdrc=True to enable).
+[2026-09-23 19:53:52.493378] Characterization is disabled (using analytical delay models) (analytical_delay=False to simulate).
+[2026-09-23 19:53:52.493715] Only generating nominal corner timing.
+[2026-09-23 19:53:52.493947] Words per row: None
+[2026-09-23 19:53:52.494226] Output files are: 
+[2026-09-23 19:53:52.494505] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lvs
+[2026-09-23 19:53:52.494723] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.sp
+[2026-09-23 19:53:52.494934] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.v
+[2026-09-23 19:53:52.495174] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lib
+[2026-09-23 19:53:52.495696] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.py
+[2026-09-23 19:53:52.495974] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.html
+[2026-09-23 19:53:52.496210] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.log
+[2026-09-23 19:53:52.496450] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lef
+[2026-09-23 19:53:52.496720] /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.gds
+[2026-09-23 21:33:35.870690] ** Submodules: 5983.3 seconds
+[2026-09-23 21:33:35.986986] ** Placement: 0.1 seconds
+[2026-09-23 23:19:40.293874] ** Routing: 6364.3 seconds
+[2026-09-23 23:19:40.426162] ** Verification: 0.0 seconds
+[2026-09-23 23:19:40.426450] ** SRAM creation: 12347.9 seconds
+[2026-09-23 23:19:40.426628] SP: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.sp
+[2026-09-23 23:19:42.509432] ** Spice writing: 2.1 seconds
+[2026-09-23 23:19:42.509720] DELAY: Writing stimulus...
+[2026-09-23 23:19:49.944008] ** DELAY: 7.4 seconds
+[2026-09-23 23:19:51.360723] GDS: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.gds
+[2026-09-23 23:19:56.624852] ** GDS: 5.3 seconds
+[2026-09-23 23:19:56.625196] LEF: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lef
+[2026-09-23 23:19:56.698248] ** LEF: 0.1 seconds
+[2026-09-23 23:19:56.698591] LVS: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lvs.sp
+[2026-09-23 23:19:58.599495] ** LVS writing: 1.9 seconds
+[2026-09-23 23:19:58.599784] LIB: Characterizing... 
+[2026-09-23 23:20:06.010262] ** Characterization: 7.4 seconds
+[2026-09-23 23:20:06.011588] Config: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.py
+[2026-09-23 23:20:06.011971] ** Config: 0.0 seconds
+[2026-09-23 23:20:06.168867] Datasheet: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.html
+[2026-09-23 23:20:06.205766] ** Datasheet: 0.2 seconds
+[2026-09-23 23:20:06.206668] Verilog: Writing to /home/mohammedessam/projects/pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.v
+[2026-09-23 23:20:06.221564] ** Verilog: 0.0 seconds
+[2026-09-23 23:20:06.243987] ** End: 12373.8 seconds
