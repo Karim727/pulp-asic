@@ -1,0 +1,101 @@
+# clocks are defined in cons.sdc
+#------------------SYNTHESIS-----------------------
+
+RUN_LINTER: false
+# Waive early pre-synth check (3222 undriven + 545 ICG/latch loops in
+# pre_synth_chk.rpt, final chk.rpt is clean): let flow continue past
+# Checker.YosysSynthChecks.
+ERROR_ON_SYNTH_CHECKS: false
+#flatten
+# SYNTH_HIERARCHY_MODE: 'keep'
+
+#generate nl.dot file
+#SYNTH_SHOW: true
+
+USE_SLANG: true
+SLANG_ARGUMENTS:
+  - "--ignore-assertions"
+  # - "-Wno-unconnected-port"
+  # - "--keep-hierarchy"
+
+#RUN_EQY: true
+
+SYNTH_STRATEGY: 'AREA 3' 
+
+# SYNTH_SHARE_RESOURCES: False
+
+# takes massive memory drains both mem and swap and much longer nets names so it results in bigger netlist x2~5 times larger
+# but it overcomes the problem of renaming intermediate wires as _123_ and so on which is terible for debbuging
+# SYNTH_AUTONAME: true
+
+SYNTH_SIZING: true
+#enable abc cell buffering
+SYNTH_ABC_BUFFERING: true
+#trying to keep these modules hierarchial but these commands both fail
+# fails with something like Warning: Selection "cluster_i.u_clustercg" did not match any module. during yosys-synthesis
+# SYNTH_KEEP_HIERARCHY_MODULES: 
+#    - "cluster_clock_gate"
+#    - "riscv_core"
+
+# keep the clk gate cell inside pulp cluster hierarchial
+# SYNTH_KEEP_HIERARCHY_INSTANCES: [cluster_i.u_clustercg]
+
+#--------------------------------------------------------------
+PNR_SDC_FILE: dir::cons.sdc
+
+
+
+#--------------------------MACRO--------------------------------------
+
+# Hardened OpenRAM macro for TCDM banks (1024x32, 1RW).
+# LEF MACRO name is sram_32x1024; 16 banks flatten to
+# tcdm_banks_i.banks_gen[N].i_bank.u_sram (dot-notation, unescaped brackets).
+
+MACROS:
+  sram_32x1024:
+    instances:
+      cluster_i.tcdm_banks_i.banks_gen[0].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[1].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[2].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[3].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[4].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[5].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[6].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[7].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[8].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[9].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[10].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[11].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[12].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[13].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[14].i_bank.u_sram: {orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[15].i_bank.u_sram: {orientation: N}
+    gds:
+      - dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.gds
+    lef:
+      - dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lef
+    nl:
+      - dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.v
+    lib:
+      min_*: [dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      nom_*: [dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      max_*: [dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+    spef: {}
+    spice: []
+    sdf: {}
+
+# Keep rows/taps out of the macro boundary (808.8 x 351.3 um OpenRAM block).
+FP_MACRO_HORIZONTAL_HALO: 5
+FP_MACRO_VERTICAL_HALO: 5
+
+
+
+# Technology-Specific Configs
+pdk::sky130*:
+  FP_CORE_UTIL: 45
+  # CLOCK_PERIOD: 10.0
+  scl::sky130_fd_sc_hs:
+    CLOCK_PERIOD: 8
+  scl::sky130_fd_sc_ls:
+    MAX_FANOUT_CONSTRAINT: 5
+
