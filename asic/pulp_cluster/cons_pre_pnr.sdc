@@ -22,6 +22,10 @@ create_clock -name "ref_clk" -period $REF_CLK_PER [get_ports ref_clk_i]
 
 set_clock_groups -asynchronous -group {in_clk} -group {ref_clk}
 
+
+set_propagated_clock [all_clocks]
+
+
 #Input/Output delays
 
 #set ASYNC_IN  [get_ports {async_*_wptr_i async_*_data_i async_*_rptr_i}]

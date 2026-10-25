@@ -7,10 +7,10 @@ RUN_LINTER: false
 # Checker.YosysSynthChecks.
 ERROR_ON_SYNTH_CHECKS: false
 #flatten
-# SYNTH_HIERARCHY_MODE: 'keep'
+SYNTH_HIERARCHY_MODE: 'flatten'
 
 #generate nl.dot file
-#SYNTH_SHOW: true
+SYNTH_SHOW: true
 
 USE_SLANG: true
 SLANG_ARGUMENTS:
@@ -18,7 +18,7 @@ SLANG_ARGUMENTS:
   # - "-Wno-unconnected-port"
   # - "--keep-hierarchy"
 
-#RUN_EQY: true
+RUN_EQY: true
 
 SYNTH_STRATEGY: 'AREA 3' 
 
@@ -41,15 +41,19 @@ SYNTH_ABC_BUFFERING: true
 # SYNTH_KEEP_HIERARCHY_INSTANCES: [cluster_i.u_clustercg]
 
 #--------------------------------------------------------------
-PNR_SDC_FILE: dir::cons.sdc
+PNR_SDC_FILE: dir::cons_pre_pnr.sdc
+
+SIGNOFF_SDC_FILE: dir::cons_pnr.sdc
 
 
-
+#-----------power pins----------------
+VERILOG_POWER_DEFINE: "USE_POWER_PINS"
 #--------------------------MACRO--------------------------------------
 
 # Hardened OpenRAM macro for TCDM banks (1024x32, 1RW).
 # LEF MACRO name is sram_32x1024; 16 banks flatten to
-# tcdm_banks_i.banks_gen[N].i_bank.u_sram (dot-notation, unescaped brackets).
+# cluster_i.tcdm_banks_i.banks_gen[N].i_bank.u_sram (dot-notation, unescaped
+# brackets). Views live in asic/SRAM_32x1024/macro/.
 
 MACROS:
   sram_32x1024:
@@ -71,31 +75,79 @@ MACROS:
       cluster_i.tcdm_banks_i.banks_gen[14].i_bank.u_sram: {orientation: N}
       cluster_i.tcdm_banks_i.banks_gen[15].i_bank.u_sram: {orientation: N}
     gds:
-      - dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.gds
+      - dir::../SRAM_32x1024/macro/sram_32x1024.gds
     lef:
-      - dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.lef
+      - dir::../SRAM_32x1024/macro/sram_32x1024.lef
     nl:
-      - dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024.v
+      - dir::../SRAM_32x1024/macro/sram_32x1024.v
     lib:
-      min_*: [dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
-      nom_*: [dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
-      max_*: [dir::pulp_tcdm_sram/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      min_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
+      nom_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
+      max_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
     spef: {}
     spice: []
     sdf: {}
+  core_region_wrap:
+    # Hardened core region macro (LEF MACRO core_region_wrap). Its netlist keeps
+    # core_id_i as an input port, so it can stand in for every core instance of
+    # the generate block: cluster_i.CORE[0..7].core_region_i (NB_CORES=8).
+    instances:
+      cluster_i.CORE[0].core_region_i: {orientation: N}
+      cluster_i.CORE[1].core_region_i: {orientation: N}
+      cluster_i.CORE[2].core_region_i: {orientation: N}
+      cluster_i.CORE[3].core_region_i: {orientation: N}
+      cluster_i.CORE[4].core_region_i: {orientation: N}
+      cluster_i.CORE[5].core_region_i: {orientation: N}
+      cluster_i.CORE[6].core_region_i: {orientation: N}
+      cluster_i.CORE[7].core_region_i: {orientation: N}
+    gds:
+      - dir::core_macro/gds/core_region_wrap.gds
+    lef:
+      - dir::core_macro/lef/core_region_wrap.lef
+    nl:
+      - dir::core_macro/nl/core_region_wrap.nl.v
+    # Powered netlist: has `inout power/ground` ports. LibreLane prefers this
+    # view over nl whenever power defines (USE_POWER_PINS) are active
+    # (synthesis, jsonheader, netgen LVS, SDF netlists).
+    pnl:
+      - dir::core_macro/pnl/core_region_wrap.pnl.v
+    lib:
+      # Multi-corner characterized views from core_macro/
+      # ss = 1.60V 100C, tt = 1.80V 25C, ff = 1.95V -40C
+      min_tt: [dir::core_macro/lib/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.lib]
+      nom_tt: [dir::core_macro/lib/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.lib]
+      max_tt: [dir::core_macro/lib/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.lib]
+
+      min_ss: [dir::core_macro/lib/min_ss_100C_1v60/core_region_wrap__min_ss_100C_1v60.lib]
+      nom_ss: [dir::core_macro/lib/nom_ss_100C_1v60/core_region_wrap__nom_ss_100C_1v60.lib]
+      max_ss: [dir::core_macro/lib/max_ss_100C_1v60/core_region_wrap__max_ss_100C_1v60.lib]
+
+      min_ff: [dir::core_macro/lib/min_ff_n40C_1v95/core_region_wrap__min_ff_n40C_1v95.lib]
+      nom_ff: [dir::core_macro/lib/nom_ff_n40C_1v95/core_region_wrap__nom_ff_n40C_1v95.lib]
+      max_ff: [dir::core_macro/lib/max_ff_n40C_1v95/core_region_wrap__max_ff_n40C_1v95.lib]
+    spef: 
+      min_*: [dir::core_macro/spef/min/core_region_wrap.min.spef]
+      nom_*: [dir::core_macro/spef/nom/core_region_wrap.nom.spef]
+      max_*: [dir::core_macro/spef/max/core_region_wrap.max.spef]
+    spice: [/home/ahmed/pulp-asic/asic/pulp_cluster/core_macro/spice/core_region_wrap.spice]
+    # Corner-matched SDF delays from core_macro/
+    sdf:
+      min_tt: [dir::core_macro/sdf/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.sdf]
+      nom_tt: [dir::core_macro/sdf/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.sdf]
+      max_tt: [dir::core_macro/sdf/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.sdf]
+
+      min_ss: [dir::core_macro/sdf/min_ss_100C_1v60/core_region_wrap__min_ss_100C_1v60.sdf]
+      nom_ss: [dir::core_macro/sdf/nom_ss_100C_1v60/core_region_wrap__nom_ss_100C_1v60.sdf]
+      max_ss: [dir::core_macro/sdf/max_ss_100C_1v60/core_region_wrap__max_ss_100C_1v60.sdf]
+
+      min_ff: [dir::core_macro/sdf/min_ff_n40C_1v95/core_region_wrap__min_ff_n40C_1v95.sdf]
+      nom_ff: [dir::core_macro/sdf/nom_ff_n40C_1v95/core_region_wrap__nom_ff_n40C_1v95.sdf]
+      max_ff: [dir::core_macro/sdf/max_ff_n40C_1v95/core_region_wrap__max_ff_n40C_1v95.sdf]
+
 
 # Keep rows/taps out of the macro boundary (808.8 x 351.3 um OpenRAM block).
 FP_MACRO_HORIZONTAL_HALO: 5
 FP_MACRO_VERTICAL_HALO: 5
 
 
-
-# Technology-Specific Configs
-pdk::sky130*:
-  FP_CORE_UTIL: 45
-  # CLOCK_PERIOD: 10.0
-  scl::sky130_fd_sc_hs:
-    CLOCK_PERIOD: 8
-  scl::sky130_fd_sc_ls:
-    MAX_FANOUT_CONSTRAINT: 5
 

@@ -857,7 +857,9 @@ module pulp_cluster
       assign s_hci_core[i].boffs = '0;
       assign s_hci_core[i].lrdy  = '1;
 
-      core_region_wrap #(
+      core_region_wrap 
+      `ifndef __pnr__
+      #(
         .CORE_TYPE_CL        ( CORE_TYPE_CL       ),
         .CORE_ID             ( i                  ),
         .ADDR_WIDTH          ( 32                 ),
@@ -875,11 +877,15 @@ module pulp_cluster
         .FP_DIVSQRT          ( CLUST_FP_DIVSQRT        ),
         .SHARED_FP           ( CLUST_SHARED_FP         ),
         .SHARED_FP_DIVSQRT   ( CLUST_SHARED_FP_DIVSQRT )
-      ) core_region_i (
-`ifdef USE_POWER_PINS
+      ) 
+      `endif
+      core_region_i (
+      `ifdef USE_POWER_PINS
+        // Powered via the core_region_wrap macro's `pnl` view, which declares
+        // the power/ground ports (the plain nl view has them stripped).
         .power               ( power                 ),
         .ground              ( ground                ),
-`endif
+        `endif
         .clk_i               ( clk_cluster           ),
         .rst_ni              ( s_rst_n               ),
         .base_addr_i         ( base_addr_i           ),
