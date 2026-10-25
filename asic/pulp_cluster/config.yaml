@@ -104,6 +104,9 @@ MACROS:
       - dir::core_macro/gds/core_region_wrap.gds
     lef:
       - dir::core_macro/lef/core_region_wrap.lef
+
+    json_h: dir::core_macro/json_h/core_region_wrap.h.json
+
     nl:
       - dir::core_macro/nl/core_region_wrap.nl.v
     # Powered netlist: has `inout power/ground` ports. LibreLane prefers this
@@ -114,35 +117,35 @@ MACROS:
     lib:
       # Multi-corner characterized views from core_macro/
       # ss = 1.60V 100C, tt = 1.80V 25C, ff = 1.95V -40C
-      min_tt: [dir::core_macro/lib/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.lib]
-      nom_tt: [dir::core_macro/lib/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.lib]
-      max_tt: [dir::core_macro/lib/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.lib]
+      min_tt_*: [dir::core_macro/lib/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.lib]
+      nom_tt_*: [dir::core_macro/lib/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.lib]
+      max_tt_*: [dir::core_macro/lib/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.lib]
 
-      min_ss: [dir::core_macro/lib/min_ss_100C_1v60/core_region_wrap__min_ss_100C_1v60.lib]
-      nom_ss: [dir::core_macro/lib/nom_ss_100C_1v60/core_region_wrap__nom_ss_100C_1v60.lib]
-      max_ss: [dir::core_macro/lib/max_ss_100C_1v60/core_region_wrap__max_ss_100C_1v60.lib]
+      min_ss_*: [dir::core_macro/lib/min_ss_100C_1v60/core_region_wrap__min_ss_100C_1v60.lib]
+      nom_ss_*: [dir::core_macro/lib/nom_ss_100C_1v60/core_region_wrap__nom_ss_100C_1v60.lib]
+      max_ss_*: [dir::core_macro/lib/max_ss_100C_1v60/core_region_wrap__max_ss_100C_1v60.lib]
 
-      min_ff: [dir::core_macro/lib/min_ff_n40C_1v95/core_region_wrap__min_ff_n40C_1v95.lib]
-      nom_ff: [dir::core_macro/lib/nom_ff_n40C_1v95/core_region_wrap__nom_ff_n40C_1v95.lib]
-      max_ff: [dir::core_macro/lib/max_ff_n40C_1v95/core_region_wrap__max_ff_n40C_1v95.lib]
+      min_ff_*: [dir::core_macro/lib/min_ff_n40C_1v95/core_region_wrap__min_ff_n40C_1v95.lib]
+      nom_ff_*: [dir::core_macro/lib/nom_ff_n40C_1v95/core_region_wrap__nom_ff_n40C_1v95.lib]
+      max_ff_*: [dir::core_macro/lib/max_ff_n40C_1v95/core_region_wrap__max_ff_n40C_1v95.lib]
     spef: 
       min_*: [dir::core_macro/spef/min/core_region_wrap.min.spef]
       nom_*: [dir::core_macro/spef/nom/core_region_wrap.nom.spef]
       max_*: [dir::core_macro/spef/max/core_region_wrap.max.spef]
-    spice: [/home/ahmed/pulp-asic/asic/pulp_cluster/core_macro/spice/core_region_wrap.spice]
+    spice: [dir::core_macro/spice/core_region_wrap.spice]
     # Corner-matched SDF delays from core_macro/
     sdf:
-      min_tt: [dir::core_macro/sdf/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.sdf]
-      nom_tt: [dir::core_macro/sdf/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.sdf]
-      max_tt: [dir::core_macro/sdf/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.sdf]
+      min_tt_*: [dir::core_macro/sdf/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.sdf]
+      nom_tt_*: [dir::core_macro/sdf/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.sdf]
+      max_tt_*: [dir::core_macro/sdf/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.sdf]
 
-      min_ss: [dir::core_macro/sdf/min_ss_100C_1v60/core_region_wrap__min_ss_100C_1v60.sdf]
-      nom_ss: [dir::core_macro/sdf/nom_ss_100C_1v60/core_region_wrap__nom_ss_100C_1v60.sdf]
-      max_ss: [dir::core_macro/sdf/max_ss_100C_1v60/core_region_wrap__max_ss_100C_1v60.sdf]
+      min_ss_*: [dir::core_macro/sdf/min_ss_100C_1v60/core_region_wrap__min_ss_100C_1v60.sdf]
+      nom_ss_*: [dir::core_macro/sdf/nom_ss_100C_1v60/core_region_wrap__nom_ss_100C_1v60.sdf]
+      max_ss_*: [dir::core_macro/sdf/max_ss_100C_1v60/core_region_wrap__max_ss_100C_1v60.sdf]
 
-      min_ff: [dir::core_macro/sdf/min_ff_n40C_1v95/core_region_wrap__min_ff_n40C_1v95.sdf]
-      nom_ff: [dir::core_macro/sdf/nom_ff_n40C_1v95/core_region_wrap__nom_ff_n40C_1v95.sdf]
-      max_ff: [dir::core_macro/sdf/max_ff_n40C_1v95/core_region_wrap__max_ff_n40C_1v95.sdf]
+      min_ff_*: [dir::core_macro/sdf/min_ff_n40C_1v95/core_region_wrap__min_ff_n40C_1v95.sdf]
+      nom_ff_*: [dir::core_macro/sdf/nom_ff_n40C_1v95/core_region_wrap__nom_ff_n40C_1v95.sdf]
+      max_ff_*: [dir::core_macro/sdf/max_ff_n40C_1v95/core_region_wrap__max_ff_n40C_1v95.sdf]
 
 
 # Keep rows/taps out of the macro boundary (808.8 x 351.3 um OpenRAM block).
