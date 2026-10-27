@@ -59,10 +59,10 @@ module riscv_core
   parameter DM_HaltAddress      = 32'h1A110800
 )
 (
-  `ifdef USE_POWER_PINS
-  inout               power,
-  inout               ground,
-  `endif
+  // `ifdef USE_POWER_PINS
+  // inout               power,
+  // inout               ground,
+  // `endif
   // Clock and Reset
   input  logic        clk_i,
   input  logic        rst_ni,

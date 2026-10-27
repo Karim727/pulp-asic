@@ -47,8 +47,8 @@ module core_region_wrap
 )
 (
 `ifdef USE_POWER_PINS
-  inout logic                            power,
-  inout logic                            ground,
+  inout logic                            vccd1,
+  inout logic                            vssd1,
 `endif
 
   input logic                            clk_i,
