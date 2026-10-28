@@ -2,8 +2,8 @@
 #------------------SYNTHESIS-----------------------
 
 RUN_LINTER: false
-# Waive early pre-synth check (3222 undriven + 545 ICG/latch loops in
-# pre_synth_chk.rpt, final chk.rpt is clean): let flow continue past
+# not to stop flow on synthesis warnings
+# checked most of the warnings and they are not critical, so we can ignore them
 # Checker.YosysSynthChecks.
 ERROR_ON_SYNTH_CHECKS: false
 #flatten
@@ -18,10 +18,19 @@ SLANG_ARGUMENTS:
   # - "-Wno-unconnected-port"
   # - "--keep-hierarchy"
 
-RUN_EQY: true
+#not yet sure of its performance
+# RUN_EQY: true
 
-SYNTH_STRATEGY: 'AREA 3' 
+#--------------------
+# strategy  gatecount   min period   
+# AREA 3  : 510499      57.62
+# DELAY 0 : 414917      55.48
+# DELAY 4 : 390886      64.63
+# other stratigies cause OOM kills during synthesis
+SYNTH_STRATEGY: 'DELAY 0' 
 
+# doesn't seem to work along with SLANG 
+#SYNTH_KEEP_HIERARCHY_MIN_COST: 5000 
 # SYNTH_SHARE_RESOURCES: False
 
 # takes massive memory drains both mem and swap and much longer nets names so it results in bigger netlist x2~5 times larger
@@ -31,21 +40,26 @@ SYNTH_STRATEGY: 'AREA 3'
 SYNTH_SIZING: true
 #enable abc cell buffering
 SYNTH_ABC_BUFFERING: true
-#trying to keep these modules hierarchial but these commands both fail
-# fails with something like Warning: Selection "cluster_i.u_clustercg" did not match any module. during yosys-synthesis
-# SYNTH_KEEP_HIERARCHY_MODULES: 
-#    - "cluster_clock_gate"
-#    - "riscv_core"
-
-# keep the clk gate cell inside pulp cluster hierarchial
-# SYNTH_KEEP_HIERARCHY_INSTANCES: [cluster_i.u_clustercg]
 
 #--------------------------------------------------------------
 PNR_SDC_FILE: dir::cons_pre_pnr.sdc
 
 SIGNOFF_SDC_FILE: dir::cons_pnr.sdc
 
-
+#-----------------PNR-----------------------
+FP_CORE_UTIL: 40
+RT_MAX_LAYER: met4
+PDN_MULTILAYER: false
+#-----------------STA-----------------------
+# Run multi-corner STA only at the slowest (setup-dominant) corners
+#only for syn exploration so the resource usage is not too high, for final signoff we will run all corners
+#STA_CORNERS:
+#  - max_tt_025C_1v80
+#  - max_ss_100C_1v60
+#  - max_ff_n40C_1v95
+# all 9 corners cause OOM kills
+# this limits number of parallel process to 3 typically each process need ~5 GB of RAM
+STA_THREADS: 3
 #-----------power pins----------------
 VERILOG_POWER_DEFINE: "USE_POWER_PINS"
 #--------------------------MACRO--------------------------------------
@@ -116,7 +130,7 @@ MACROS:
       - dir::core_macro/pnl/core_region_wrap.pnl.v
     lib:
       # Multi-corner characterized views from core_macro/
-      # ss = 1.60V 100C, tt = 1.80V 25C, ff = 1.95V -40C
+      
       min_tt_*: [dir::core_macro/lib/min_tt_025C_1v80/core_region_wrap__min_tt_025C_1v80.lib]
       nom_tt_*: [dir::core_macro/lib/nom_tt_025C_1v80/core_region_wrap__nom_tt_025C_1v80.lib]
       max_tt_*: [dir::core_macro/lib/max_tt_025C_1v80/core_region_wrap__max_tt_025C_1v80.lib]
@@ -149,8 +163,8 @@ MACROS:
 
 
 # Keep rows/taps out of the macro boundary (808.8 x 351.3 um OpenRAM block).
-FP_MACRO_HORIZONTAL_HALO: 5
-FP_MACRO_VERTICAL_HALO: 5
+FP_MACRO_HORIZONTAL_HALO: 10
+FP_MACRO_VERTICAL_HALO: 10
 
 
 

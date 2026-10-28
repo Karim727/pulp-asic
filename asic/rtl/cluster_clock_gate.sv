@@ -75,18 +75,26 @@
   // );
 
   //instantiate and map to the std cell
-  //but unlike tc_clk_std_cell this has size x4
+  // //but unlike tc_clk_std_cell this has size x4
 
-   (* keep = 1*) logic en_or_test;
-   assign en_or_test = s_clockenable | test_mode_i;
+  //  (* keep = 1*) logic en_or_test;
+  //  assign en_or_test = s_clockenable | test_mode_i;
 
   // keep/dont_touch: survive flatten + ABC, stay visible as *u_icg*
   
-  
-  (* keep = 1, dont_touch = 1 *) sky130_fd_sc_hd__dlclkp_4 u_icg (
-    .CLK  (clk_i),
-    .GATE (en_or_test),
-    .GCLK (cluster_clk_o)
-  );
+  //  this std_cell has no dedicated test pin
+  // (* keep = 1, dont_touch = 1 *) sky130_fd_sc_hd__dlclkp_4 u_icg (
+  //   .CLK  (clk_i),
+  //   .GATE (en_or_test),
+  //   .GCLK (cluster_clk_o)
+  // );
+
+  // pre mapped ICG  
+  sky130_fd_sc_hd__sdlclkp_4 cluster_ICG_i (
+      .CLK  ( clk_i     ),
+      .GATE ( s_clockenable      ),
+      .SCE  ( test_mode_i ),
+      .GCLK ( cluster_clk_o     )
+    );
 
 endmodule

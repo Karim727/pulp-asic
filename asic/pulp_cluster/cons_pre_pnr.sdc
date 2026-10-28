@@ -19,11 +19,14 @@ create_clock -name "ref_clk" -period $REF_CLK_PER [get_ports ref_clk_i]
 #                        -name "cluster_clk" [get_pin cluster_i/u_clustercg/cluster_clk_o] \
 #                        -divide_by 1 -add
 
+# set_clock_uncertainty [expr 0.1*CLK_PER] -setup [get_clocks in_clk]
+# set_clock_uncertainty [expr 0.08*CLK_PER] -hold [get_clocks in_clk]
+
 
 set_clock_groups -asynchronous -group {in_clk} -group {ref_clk}
 
 
-set_propagated_clock [all_clocks]
+# set_propagated_clock [all_clocks]
 
 
 #Input/Output delays
@@ -40,10 +43,15 @@ set_propagated_clock [all_clocks]
 #set_max_delay $CLK_PER -datapath_only -from [all_registers] -to $ASYNC_OUT
 
 # 4. Reset - why: async assert, sync deassert in rstgen, no setup to check.
+#top level cluster reset
 set_false_path -from [get_ports rst_ni]
-#set_false_path -from [get_cells -hier *rstgen*] -to [get_pins -hier *RESET_B]
-set_false_path -through [get_nets *cs_registers_i.rst_n]
+
+set_false_path -through [get_nets *dbg_irq_sync.rstn_i]
 set_false_path -to [get_pins */RESET_B]
+set_false_path -to [get_pins */SET_B]
+
+
+
 # Sync inputs (clk_i, ref_clk_i, rst_ni, async_* excluded) - one line per port
 set_input_delay  $input_delay  -clock [get_clocks in_clk] [get_ports {dma_pe_evt_ack_i}]
 set_input_delay  $input_delay  -clock [get_clocks in_clk] [get_ports {dma_pe_irq_ack_i}]
