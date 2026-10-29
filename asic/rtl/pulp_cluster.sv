@@ -883,8 +883,8 @@ module pulp_cluster
       `ifdef USE_POWER_PINS
         // Powered via the core_region_wrap macro's `pnl` view, which declares
         // the power/ground ports (the plain nl view has them stripped).
-        .vccd1               ( vccd1                 ),
-        .vssd1               ( vssd1                ),
+        .power               ( power                 ),
+        .ground              ( ground                ),
         `endif
         .clk_i               ( clk_cluster           ),
         .rst_ni              ( s_rst_n               ),

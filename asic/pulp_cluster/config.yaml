@@ -53,6 +53,7 @@ PDN_MULTILAYER: false
 #-----------------STA-----------------------
 # Run multi-corner STA only at the slowest (setup-dominant) corners
 #only for syn exploration so the resource usage is not too high, for final signoff we will run all corners
+# max corners to check setup violations and max freq.
 #STA_CORNERS:
 #  - max_tt_025C_1v80
 #  - max_ss_100C_1v60
@@ -60,8 +61,59 @@ PDN_MULTILAYER: false
 # all 9 corners cause OOM kills
 # this limits number of parallel process to 3 typically each process need ~5 GB of RAM
 STA_THREADS: 3
-#-----------power pins----------------
+STA_CORNERS:
+  - nom_tt_025C_1v80   # typical — also the DEFAULT_CORNER
+  - min_tt_025C_1v80   # best case (hold-side checks for the signoff policy)
+  - max_tt_025C_1v80   # worst case (setup-side checks for the signoff policy)
+
+#-----------power pins (PDN macro hookup)----------------
+# Top-level grid PG nets. Any value would do for pdngen, but `vccd1`/`vssd1`
+# match the PG pin names of BOTH macro families (sram_32x1024 LEF and the
+# re-hardened core_region_wrap LEF), which keeps the PDN entries uniform.
+# VDD_NETS: ["vccd1"]
+# GND_NETS: ["vssd1"]
+
+VDD_PIN: "vccd1"
+GND_PIN: "vssd1"
+# PDN_MACRO_CONNECTIONS below is the single owner of all macro PG hookups, so
+# USE_POWER_PINS must stay OFF: with the define set, Yosys.JsonHeader compiles
+# the RTL ifdefs into per-instance local nets (cluster_i.CORE[N].power etc.),
+# and Odb.SetPowerConnections then conflicts with the floorplan hookups
+# ("add_global_connections failed to make any connections"). The explicit null
+# is REQUIRED: an unset key falls back to the step default (USE_POWER_PINS).
 VERILOG_POWER_DEFINE: "USE_POWER_PINS"
+
+# One explicit entry per macro instance (no wildcards). Target names are the
+# ESCAPED names stored in the ODB (see any run DEF, e.g.
+# cluster_i.tcdm_banks_i.banks_gen\[0\].i_bank.u_sram): to regex-match a
+# literal backslash + '[' the pattern needs twice the symbols (`\\` matches
+# `\`, `\[` matches `[`); `]` matches itself as-is. Macro PG pin tails are
+# vccd1/vssd1 for both macro families.
+PDN_MACRO_CONNECTIONS:
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[0\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[1\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[2\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[3\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[4\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[5\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[6\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[7\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[8\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[9\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[10\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[11\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[12\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[13\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[14\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[15\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[0\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[1\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[2\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[3\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[4\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[5\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[6\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[7\\\].core_region_i VPWR VGND vccd1 vssd1'
 #--------------------------MACRO--------------------------------------
 
 # Hardened OpenRAM macro for TCDM banks (1024x32, 1RW).
