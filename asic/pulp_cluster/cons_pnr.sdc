@@ -11,8 +11,8 @@ create_clock -name "in_clk" -period $CLK_PER [get_ports clk_i]
 # Used for "peripherals"
 create_clock -name "ref_clk" -period $REF_CLK_PER [get_ports ref_clk_i] 
 
-# set_clock_uncertainty [expr 0.1*CLK_PER] -setup [get_clocks in_clk]
-# set_clock_uncertainty [expr 0.08*CLK_PER] -hold [get_clocks in_clk]
+set_clock_uncertainty [expr 0.1*CLK_PER] -setup [get_clocks in_clk]
+set_clock_uncertainty [expr 0.08*CLK_PER] -hold [get_clocks in_clk]
 
 set_clock_groups -asynchronous -group {in_clk} -group {ref_clk}
 

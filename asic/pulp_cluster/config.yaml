@@ -66,11 +66,7 @@ STA_THREADS: 3
 # 9 parallel OpenSTA processes, each loading the ~3.3M-line flattened netlist.
 # On this 14GB machine that trips systemd-oomd (killed at Stage 12).
 # Run only 3 corners in parallel: typical + process-violation-signoff corners
-# (TIMING_VIOLATION_CORNERS default is ["*tt*"], so keep the tt variants).
-STA_CORNERS:
-  - nom_tt_025C_1v80   # typical — also the DEFAULT_CORNER
-  - min_ff_025C_1v80   # best case (hold checks)
-  - max_ss_025C_1v80   # worst case (setup checks)
+# # (TIMING_VIOLATION_CORNERS default is ["*tt*"], so keep the tt variants).s
 
 #-----------power pins (PDN macro hookup)----------------
 # Top-level grid PG nets. Any value would do for pdngen, but `vccd1`/`vssd1`
