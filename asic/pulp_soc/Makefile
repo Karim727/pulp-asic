@@ -38,7 +38,8 @@ REPLACE_FILES += $(RTL)/soc_interconnect.sv
 REPLACE_FILES += $(RTL)/udma_subsystem.sv
 # slang fix: FP register file only when FPU == 1 && Zfinx == 0
 REPLACE_FILES += $(RTL)/riscv_register_file.sv
-
+# clock gate mapped to the sky130 ICG cell (sdlclkp); shared with pulp_cluster / riscv_core
+REPLACE_FILES += $(PULP)/asic/rtl/tc_clk.sv
 # -----------------------------------------------------------------------------
 # REMOVE_FILES: in the bender list but not used by our design -> removed
 #               (file name only, matched against the end of each line)

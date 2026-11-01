@@ -33,6 +33,7 @@ The `Makefile` lists each file by name, with a one-line comment.
 | `soc_interconnect.sv` | replace | Slang fix: `LatencyMode` cast to `axi_pkg::xbar_latency_e` |
 | `udma_subsystem.sv` | replace | Slang fix: hyper read logic `else if(!is_hyper_read_q)` → `else` |
 | `riscv_register_file.sv` | replace | Slang fix: FP register file only when `FPU == 1 && Zfinx == 0` |
+| `asic/rtl/tc_clk.sv` | replace | Shared team file: `tc_clk_gating` mapped to the sky130 ICG cell `sky130_fd_sc_hd__sdlclkp_1` instead of latch + AND (~99 clock gates in pulp_soc, mostly uDMA) |
 | `memory_models.sv` | **removed** | Old L2 models, unused; they need `generic_memory`, which has no model |
 | `gf22_FLL.sv` | add | FLL stub: `FLLCLK = REFCLK`, `LOCK = 1`, `CFGACK = CFGREQ` |
 | `generic_rom.sv` | add | Boot ROM (8 KB) from standard cells. **Generated** by `scripts/gen_boot_rom.py` from `sim/boot/boot_code.cde`; do not edit by hand |
