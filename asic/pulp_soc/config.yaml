@@ -1,9 +1,14 @@
 DESIGN_NAME: pulp_soc
-CLOCK_PORT: slow_clk_i
+# main clock: the FLL stubs (rtl/gf22_FLL.sv) pass ref_clk_i to soc/per/cluster clocks
+CLOCK_PORT: ref_clk_i
 CLOCK_PERIOD: 50.0
 #PDK: sky130
 #PDK_VERSION: 8afc8346a57fe1ab7934ba5a6056ea8b43078e71
 #PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
+
+# timing constraints: ref_clk, jtag_tck, cam_clk, i2s_sck (async), I/O delays
+PNR_SDC_FILE: dir::pulp_soc.sdc
+SIGNOFF_SDC_FILE: dir::pulp_soc.sdc
 
 # Frontend
 USE_SLANG: true
@@ -26,13 +31,66 @@ GRT_ADJUSTMENT: 0.25
 # Macro configs
 ##################################
 VERILOG_POWER_DEFINE: "USE_POWER_PINS"
-VDD_PIN: "power"
-GND_PIN: "ground"
+# VDD_PIN / GND_PIN are the standard-cell power pin names (PDK default VPWR/VGND).
+# "power"/"ground" do not exist in sky130_fd_sc_hd -> disabled (not set in pulp_cluster either).
+# VDD_PIN: "power"
+# GND_PIN: "ground"
 PDN_CORE_RING: true
 BOTTOM_MARGIN_MULT: 8
 TOP_MARGIN_MULT: 8
 RIGHT_MARGIN_MULT: 42
 LEFT_MARGIN_MULT: 42
+
+
+##################################
+# L2 SRAM macros (sram_32x1024, OpenRAM, 1024x32 1RW, 808.8 x 351.3 um)
+##################################
+# 16 macros = 64 KB L2, built by rtl/tc_sram_l2.sv inside rtl/l2_ram_multi_bank.sv:
+#   interleaved banks CUTS[0..3]       : 2 macros each (8 KB)
+#   private banks bank_sram_pri0/pri1_i: 4 macros each (16 KB)
+# Instance names = flattened hierarchy (dot notation, unescaped brackets).
+# CHECK them against the synthesized netlist on the first run.
+MACROS:
+  sram_32x1024:
+    instances:
+      l2_ram_i.CUTS[0].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
+      l2_ram_i.CUTS[0].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
+      l2_ram_i.CUTS[1].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
+      l2_ram_i.CUTS[1].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
+      l2_ram_i.CUTS[2].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
+      l2_ram_i.CUTS[2].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
+      l2_ram_i.CUTS[3].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
+      l2_ram_i.CUTS[3].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[2].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[3].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[2].u_sram: {orientation: N}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[3].u_sram: {orientation: N}
+    gds:
+      - dir::sram_32x1024/sram_32x1024.gds
+    lef:
+      - dir::sram_32x1024/sram_32x1024.lef
+    nl:
+      - dir::sram_32x1024/sram_32x1024.v
+    lib:
+      min_*: [dir::sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      nom_*: [dir::sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      max_*: [dir::sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+    spef: {}
+    spice: []
+    sdf: {}
+
+# macro power pins (vccd1/vssd1) -> core power grid
+#   format: <instance regex> <vdd net> <gnd net> <macro vdd pin> <macro gnd pin>
+PDN_MACRO_CONNECTIONS:
+  - "l2_ram_i.* vccd1 vssd1 vccd1 vssd1"
+
+# keep std-cell rows/taps away from the macro edges (same as pulp_cluster)
+FP_MACRO_HORIZONTAL_HALO: 5
+FP_MACRO_VERTICAL_HALO: 5
 
 
 # CHECK AGAIN

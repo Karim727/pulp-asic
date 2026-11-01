@@ -1,28 +1,102 @@
-PACKAGE = pulp_soc
+# =============================================================================
+# pulp_soc - generate flist.yaml for LibreLane
+#
+#   make flist  (default)
+#     1) bender writes the original file list of package pulp_soc
+#     2) every file in REPLACE_FILES takes the place of the bender file with
+#        the same name (same position = same compile order)
+#     3) every file in REMOVE_FILES is deleted from the list (unused files)
+#     4) every file in ADD_FILES is appended at the end
+#     5) the PULP include dir is added and duplicate lines are removed
+#
+#   Any other target (dse, dse-dry, list-modules, ...) goes to ../Makefile.
+#
+#   To add a new modified file: put it in rtl/ and add ONE line below,
+#   in REPLACE_FILES (bender has a file with the same name) or in ADD_FILES.
+# =============================================================================
 
-# extra include dir (pulp_soc_defines.sv, periph_bus_defines.sv, soc_mem_map.svh)
-EXTRA_INCDIR = $(abspath ../../rtl/includes)
+PACKAGE := pulp_soc
 
-# Directory holding my modified/new RTL (overrides files in .bender checkouts)
-OVERRIDE_DIR = $(abspath rtl)
+# our modified / new RTL
+RTL     := $(abspath rtl)
+# pulp-asic root
+PULP    := $(abspath ../..)
 
+# include dir for pulp_soc_defines.sv, periph_bus_defines.sv, soc_mem_map.svh
+INC_DIR := $(PULP)/rtl/includes
+
+# -----------------------------------------------------------------------------
+# REPLACE_FILES: bender has a file with the same name -> use our copy instead
+# -----------------------------------------------------------------------------
+# L2 = 64 KB: L2_BANK_SIZE = 8192 (uDMA reach 128 KB), interleaved banks = 2048 words
+REPLACE_FILES += $(RTL)/pulp_soc.sv
+# L2 private banks = 4096 words; all L2 banks use tc_sram_l2 (sram_32x1024 macros)
+REPLACE_FILES += $(RTL)/l2_ram_multi_bank.sv
+# slang fix: LatencyMode cast to axi_pkg::xbar_latency_e
+REPLACE_FILES += $(RTL)/soc_interconnect.sv
+# slang fix: hyper read logic "else if(!is_hyper_read_q)" -> "else"
+REPLACE_FILES += $(RTL)/udma_subsystem.sv
+# slang fix: FP register file only when FPU == 1 && Zfinx == 0
+REPLACE_FILES += $(RTL)/riscv_register_file.sv
+
+# -----------------------------------------------------------------------------
+# REMOVE_FILES: in the bender list but not used by our design -> removed
+#               (file name only, matched against the end of each line)
+# -----------------------------------------------------------------------------
+# old L2 models (replaced by l2_ram_multi_bank + tc_sram_l2); they instantiate
+# generic_memory, which has no model -> would break the Verilator lint
+REMOVE_FILES += memory_models.sv
+
+# -----------------------------------------------------------------------------
+# ADD_FILES: not in the bender list of pulp_soc -> appended at the end
+# -----------------------------------------------------------------------------
+# FLL stub: FLLCLK = REFCLK (no GF22 FLL in SKY130)
+ADD_FILES += $(RTL)/gf22_FLL.sv
+# boot ROM as blackbox (hard macro later)
+ADD_FILES += $(RTL)/generic_rom.sv
+# L2 memory cut built from N x sram_32x1024 OpenRAM macros
+ADD_FILES += $(RTL)/tc_sram_l2.sv
+# JTAG TAP of the PULP top (lives in pulp-asic/rtl/pulp, not in package pulp_soc)
+ADD_FILES += $(PULP)/rtl/pulp/jtag_tap_top.sv
+
+# =============================================================================
 .DEFAULT_GOAL := flist
+.PHONY: flist
 
 flist:
-	$(MAKE) -f ../Makefile flist PACKAGE=$(PACKAGE)
-	grep -q "$(EXTRA_INCDIR)" flist.yaml || sed -i '/^VERILOG_INCLUDE_DIRS:/a\  - $(EXTRA_INCDIR)' flist.yaml
-	for f in $(OVERRIDE_DIR)/*.sv; do \
-	  b=$$(basename $$f); \
-	  sed -i "s|^\( *- \).*/$$b\$$|\1$$f|" flist.yaml; \
-	  awk -v p="$$f" '$$0 ~ "^ *- "p"$$" { if (seen++) next } { print }' flist.yaml > flist.tmp \
-	    && mv flist.tmp flist.yaml; \
-	done
-	for f in $(OVERRIDE_DIR)/*.sv; do \
-	  grep -qF -- "- $$f" flist.yaml || echo "  - $$f" >> flist.yaml; \
-	done
-	grep -q "jtag_tap_top.sv" flist.yaml || echo "  - $(abspath ../../rtl/pulp/jtag_tap_top.sv)" >> flist.yaml
+	@echo ">> [1/5] bender: original file list of $(PACKAGE)"
+	@$(MAKE) --no-print-directory -f ../Makefile flist PACKAGE=$(PACKAGE)
 
-# forward every other target to the parent Makefile
+	@echo ">> [2/5] replace bender files with our copies"
+	@for f in $(REPLACE_FILES); do \
+	  name=$$(basename $$f); \
+	  n=$$(grep -c "/$$name\$$" flist.yaml); \
+	  if [ $$n -eq 0 ]; then \
+	    echo "   ERROR: $$name is not in the bender list -> move it to ADD_FILES"; exit 1; \
+	  fi; \
+	  sed -i "s|^  - .*/$$name\$$|  - $$f|" flist.yaml; \
+	  echo "   replaced  $$name"; \
+	done
+
+	@echo ">> [3/5] remove unused files"
+	@for name in $(REMOVE_FILES); do \
+	  n=$$(grep -c "/$$name\$$" flist.yaml); \
+	  sed -i "\|^  - .*/$$name\$$|d" flist.yaml; \
+	  echo "   removed   $$name ($$n line)"; \
+	done
+
+	@echo ">> [4/5] add new files"
+	@for f in $(ADD_FILES); do \
+	  echo "  - $$f" >> flist.yaml; \
+	  echo "   added     $$(basename $$f)"; \
+	done
+
+	@echo ">> [5/5] include dir + remove duplicate lines"
+	@grep -q "$(INC_DIR)\$$" flist.yaml || sed -i "/^VERILOG_INCLUDE_DIRS:/a\  - $(INC_DIR)" flist.yaml
+	@awk '!(/^  - / && seen[$$0]++)' flist.yaml > flist.tmp && mv flist.tmp flist.yaml
+	@echo ">> flist.yaml ready"
+
+# forward every other target to the shared ../Makefile
 Makefile: ;
 %:
-	$(MAKE) -f ../Makefile $@ PACKAGE=$(PACKAGE)
+	@$(MAKE) --no-print-directory -f ../Makefile $@ PACKAGE=$(PACKAGE)
