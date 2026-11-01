@@ -18,7 +18,7 @@ librelane config.yaml flist.yaml --run-tag <tag>  # same invocation as before, n
 | `pulp_soc.sdc` | Timing constraints |
 | `Makefile` | Builds `flist.yaml` from bender plus the files in `rtl/` |
 | `rtl/` | Modified and new RTL (see below) |
-| `sram_32x1024/` | OpenRAM macro views (GDS/LEF/LIB/V). **GDS and LEF are git-ignored, so get them from the team** |
+| `../SRAM_32x1024/macro/` | Shared `sram_32x1024` OpenRAM macro views (GDS/LEF/LIB/V), used by `config.yaml` (same macro as pulp_cluster) |
 | `docs/` | Analysis reports (flip-flop breakdown, script) |
 
 ## RTL changes (`rtl/`)

@@ -44,6 +44,7 @@ LEFT_MARGIN_MULT: 42
 
 ##################################
 # L2 SRAM macros (sram_32x1024, OpenRAM, 1024x32 1RW, 808.8 x 351.3 um)
+# shared macro views in asic/SRAM_32x1024/macro (same macro as pulp_cluster)
 ##################################
 # 16 macros = 64 KB L2, built by rtl/tc_sram_l2.sv inside rtl/l2_ram_multi_bank.sv:
 #   interleaved banks CUTS[0..3]       : 2 macros each (8 KB)
@@ -70,15 +71,15 @@ MACROS:
       l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[2].u_sram: {orientation: N}
       l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[3].u_sram: {orientation: N}
     gds:
-      - dir::sram_32x1024/sram_32x1024.gds
+      - dir::../SRAM_32x1024/macro/sram_32x1024.gds
     lef:
-      - dir::sram_32x1024/sram_32x1024.lef
+      - dir::../SRAM_32x1024/macro/sram_32x1024.lef
     nl:
-      - dir::sram_32x1024/sram_32x1024.v
+      - dir::../SRAM_32x1024/macro/sram_32x1024.v
     lib:
-      min_*: [dir::sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
-      nom_*: [dir::sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
-      max_*: [dir::sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      min_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
+      nom_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
+      max_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
     spef: {}
     spice: []
     sdf: {}
