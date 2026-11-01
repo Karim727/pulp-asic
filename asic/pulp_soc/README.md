@@ -19,6 +19,7 @@ librelane config.yaml flist.yaml --run-tag <tag>  # same invocation as before, n
 | `Makefile` | Builds `flist.yaml` from bender plus the files in `rtl/` |
 | `rtl/` | Modified and new RTL (see below) |
 | `../SRAM_32x1024/macro/` | Shared `sram_32x1024` OpenRAM macro views (GDS/LEF/LIB/V), used by `config.yaml` (same macro as pulp_cluster) |
+| `scripts/` | `gen_boot_rom.py` (builds `rtl/generic_rom.sv`), `tb_generic_rom.sv` (checks it against the `.cde`) |
 | `docs/` | Analysis reports (flip-flop breakdown, script) |
 
 ## RTL changes (`rtl/`)
@@ -34,7 +35,7 @@ The `Makefile` lists each file by name, with a one-line comment.
 | `riscv_register_file.sv` | replace | Slang fix: FP register file only when `FPU == 1 && Zfinx == 0` |
 | `memory_models.sv` | **removed** | Old L2 models, unused; they need `generic_memory`, which has no model |
 | `gf22_FLL.sv` | add | FLL stub: `FLLCLK = REFCLK`, `LOCK = 1`, `CFGACK = CFGREQ` |
-| `generic_rom.sv` | add | Boot ROM as blackbox (hard macro later) |
+| `generic_rom.sv` | add | Boot ROM (8 KB) from standard cells. **Generated** by `scripts/gen_boot_rom.py` from `sim/boot/boot_code.cde`; do not edit by hand |
 | `tc_sram_l2.sv` | add | L2 cut built from N × `sram_32x1024` (N = NumWords / 1024); behavioral view in simulation |
 | `rtl/pulp/jtag_tap_top.sv` | add | JTAG TAP from the PULP top (not part of package `pulp_soc`) |
 
@@ -54,6 +55,15 @@ Sizes come from the measured L2 usage of the regression tests (max 5.3 KB data, 
 Matching changes outside this folder:
 - `pulp-asic/rtl/includes/soc_mem_map.svh`: new end addresses (`PRIVATE_BANK0/1_END`, `TCDM_END`).
 - `pulp-runtime`: `kernel/chips/pulp/link.ld` (3 L2 regions, so overflow is a link error), `include/archi/chips/pulp/memory_map.h` and `properties.h` (new sizes), and `include/implem/link.h` (L2 heap uses the real bank size).
+
+## Boot ROM
+
+The boot ROM (`0x1A00_0000`, 2048 × 32 bit = 8 KB) is built from **standard cells**, not a ROM macro. Only 353 of the 2048 words are non-zero, so the logic is small, needs no `.lib`, and has no DRC issues. The OpenRAM ROM macro had 1984 DRC errors and no timing model.
+
+- The content comes from `sim/boot/boot_code.cde`, the same image the RTL simulation uses. It is identical to `asic/ROM/boot_rom_data.bin`.
+- If the boot code changes, run `python3 scripts/gen_boot_rom.py`, then `make flist` and re-run synthesis.
+- To check the generated ROM, see the header of `scripts/tb_generic_rom.sv` (QuestaSim, expected `PASS: 2048 addresses match`).
+- The content is fixed in silicon. The final boot code (boot modes: JTAG / SPI flash / HyperFlash) must be agreed before tape-out.
 
 ## Clocking
 
@@ -81,5 +91,4 @@ The GF22 FLLs have no SKY130 equivalent. `gf22_FLL.sv` is a pass-through, so the
 
 - [ ] First synthesis run: confirm macro instance names, check that `stat.rpt` shows `16 sram_32x1024`, with no `tc_sram` and no `gf22_FLL`
 - [ ] Floorplan: macro placement
-- [ ] Boot ROM macro / timing model
 - [ ] Fork `pulp_soc` and point `Bender.yml` to it
