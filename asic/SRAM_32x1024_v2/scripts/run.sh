@@ -7,6 +7,8 @@
 #   bash scripts/run.sh                          # config/sram_32x1024.py
 #   bash scripts/run.sh config/<other>.py        # any other config
 #
+# OPENRAM_CHECK=0 bash scripts/run.sh   -> skip OpenRAM's DRC/LVS (views only)
+#
 # OpenRAM code: OPENRAM_DIR (default ~/projects/OpenRAM_dev), must be at the
 # commit in OPENRAM_COMMIT (OpenRAM dev branch).
 #
@@ -64,4 +66,11 @@ grep -E "DRC Errors|LVS Errors|error tiles|ERROR" "$LOG" || echo "(no DRC/LVS li
 
 echo
 echo "================ DRC per rule ================"
-bash "$HERE/drc_why.sh" "$OPENRAM_TMP" "$ROOT/runs/$NAME"
+if [ -f "$OPENRAM_TMP/run_drc.sh" ]; then
+  bash "$HERE/drc_why.sh" "$OPENRAM_TMP" "$ROOT/runs/$NAME"
+else
+  echo "(OpenRAM DRC/LVS skipped: OPENRAM_CHECK=0)"
+fi
+echo
+echo "================ generated files ================"
+ls -1 "$ROOT/macro/$NAME" 2>/dev/null | grep -E '\.(gds|lef|lib|v|sp)$' || echo "none (run failed?)"

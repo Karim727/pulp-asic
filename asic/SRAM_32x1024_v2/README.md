@@ -33,11 +33,23 @@ make sky130-install PDK_ROOT=$HOME/openram_pdk SRAM_LIB_DIR=$HOME/projects/sky13
 
 | # | Step | Command | Output |
 |---|---|---|---|
-| 1 | Generate (OpenRAM DRC/LVS on) | `bash scripts/run.sh` | `macro/sram_32x1024/`, `logs/`, `runs/sram_32x1024/` |
+| 1 | Generate (OpenRAM DRC/LVS on) | `bash scripts/run.sh` | `macro/sram_32x1024/` (3 libs: TT/SS/FF), `logs/`, `runs/sram_32x1024/` |
 | 2 | Gap fill + KLayout DRC | `bash scripts/gap_fill.sh macro/sram_32x1024/sram_32x1024.gds sram_32x1024` | `sram_32x1024_fill.gds`, `runs/klayout_fill_sram_32x1024/` |
 | 3 | Fix any remaining errors | see "Manual fixes" | `sram_32x1024_final.gds` |
 | 4 | KLayout DRC (signoff deck) | `bash scripts/drc_klayout.sh macro/sram_32x1024/sram_32x1024_final.gds sram_32x1024 ~/.ciel/sky130A runs/klayout_final` | must be **0** |
 | 5 | LVS on the final GDS | `bash scripts/lvs_check.sh runs/sram_32x1024/openram_temp macro/sram_32x1024/sram_32x1024_final.gds sram_32x1024 runs/lvs_final` | must be **Circuits match uniquely** |
+
+## Timing corners
+
+`config/sram_32x1024.py` builds one `.lib` per corner, matching the LibreLane STA corners:
+
+| Corner | Process | VDD | Temp | Use |
+|---|---|---|---|---|
+| `TT_1p8V_25C` | TT | 1.80 V | 25 C | typical |
+| `SS_1p6V_100C` | SS | 1.60 V | 100 C | setup |
+| `FF_1p95V_-40C` | FF | 1.95 V | -40 C | hold |
+
+The libs use OpenRAM's analytical delay model (`analytical_delay = True`), which is approximate. For SPICE-characterized libs, set `analytical_delay = False`. This takes hours per corner on 32x1024.
 
 ## What `gap_fill.py` changes
 

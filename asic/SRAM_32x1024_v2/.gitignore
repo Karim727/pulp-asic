@@ -1,3 +1,4 @@
 # generated / temporary (regenerate with scripts/run.sh)
 runs/
 logs/
+__pycache__/

@@ -78,6 +78,49 @@ nsdm_fill = close_fill(nsdm, 0.38) - psdm
 # must enclose N-diff by 0.125um, so this is the closest legal psdm edge).
 psdm_fill = close_fill(psdm, 0.38) - ndiff_all.sized(um(0.125)) - nsdm_fill
 
+# min-width repair (nsdm.2 / psdm.2, 0.38um): a fill bridge between two
+# diagonally offset shapes forms a Z whose joint is only as thick as the gap
+# (0.26um). For each width violation, extrude one of the two facing edges
+# outward by the missing amount, on whichever side does not enter the keepout.
+def thicken(base, fill, keepout, width, max_iter=3):
+    w = um(width)
+    for _ in range(max_iter):
+        eps = (base + fill).merged().width_check(w, True)   # whole edges
+        if eps.is_empty():
+            break
+        added = False
+        for ep in eps.each():
+            # only width problems created by our own fill (the generated
+            # layout is width-clean, and SRAM core cells use special rules)
+            if (pya.Region(ep.bbox().enlarged(1, 1)) & fill).is_empty():
+                continue
+            for ea, eb in ((ep.first, ep.second), (ep.second, ep.first)):
+                if ea.dy() == 0 and eb.dy() == 0:            # horizontal edges
+                    deficit = w - abs(ea.p1.y - eb.p1.y)
+                    x1, x2 = sorted((ea.p1.x, ea.p2.x))
+                    y = ea.p1.y
+                    box = pya.Box(x1, y, x2, y + deficit) if y > eb.p1.y else pya.Box(x1, y - deficit, x2, y)
+                elif ea.dx() == 0 and eb.dx() == 0:          # vertical edges
+                    deficit = w - abs(ea.p1.x - eb.p1.x)
+                    y1, y2 = sorted((ea.p1.y, ea.p2.y))
+                    x = ea.p1.x
+                    box = pya.Box(x, y1, x + deficit, y2) if x > eb.p1.x else pya.Box(x - deficit, y1, x, y2)
+                else:
+                    continue
+                if deficit <= 0 or box.empty():
+                    continue
+                cand = pya.Region(box)
+                if (cand & keepout).is_empty():
+                    fill = fill + cand
+                    added = True
+                    break
+        if not added:
+            break
+    return fill
+
+psdm_fill = thicken(psdm, psdm_fill, ndiff_all.sized(um(0.125)) + nsdm_fill, 0.38)
+nsdm_fill = thicken(nsdm, nsdm_fill, pdiff_all.sized(um(0.125)) + psdm + psdm_fill, 0.38)
+
 # nwell: nwell.2a min spacing 1.27um (also removes the small pieces of nwell.1)
 # OFF by default: on sram_16x128 it bridged the tiny 0.22x0.18um nwell pin
 # rectangles of col_cap_array with thin 0.18um strips -> more nwell errors.
