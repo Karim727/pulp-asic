@@ -2,3 +2,15 @@
 runs/
 logs/
 __pycache__/
+
+# OpenRAM intermediate outputs (only the final views are committed)
+macro/*/sram.sp
+macro/*/trimmed.sp
+macro/*/*_stim.sp
+macro/*/*_meas.sp
+macro/*/datasheet.info
+macro/*/*.html
+macro/*/*.log
+macro/*/*.py
+macro/sram_32x1024/sram_32x1024.sp
+macro/sram_32x1024/sram_32x1024.gds
