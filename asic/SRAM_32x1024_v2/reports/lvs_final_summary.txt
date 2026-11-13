@@ -1,0 +1,10 @@
+LVS (Magic extraction + Netgen 1.5.318), GDS: macro/sram_32x1024/sram_32x1024_fill.gds
+
+Number of devices: 270248 | Number of devices: 270248
+Number of nets: 68589 | Number of nets: 68589
+
+Final result: Circuits match uniquely.
+.
+
+Fri Nov 13 11:45:51 PM EET 2026: Starting LVS using Netgen /nix/store/h3crgmx1w7h86qjpr131igi7p576mp3x-netgen-1.5.318/bin/netgen
+Sat Nov 14 12:17:13 AM EET 2026: Finished (0) LVS using Netgen /nix/store/h3crgmx1w7h86qjpr131igi7p576mp3x-netgen-1.5.318/bin/netgen

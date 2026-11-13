@@ -1,0 +1,3 @@
+1270	nsdm.1	nsdm.1 : min. nsdm spacing in periphery : 0.38um
+26	psdm.1	psdm.1 : min. psdm spacing in periphery : 0.38um
+4	nwell.6	nwell.6 : min enclosure of nwellHole by dnwell : 1.03um
