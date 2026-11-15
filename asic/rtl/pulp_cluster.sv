@@ -661,7 +661,8 @@ module pulp_cluster
   /* cluster (log + periph) interconnect and attached peripherals */
   //*************************************************** 
   
-  cluster_interconnect_wrap #(
+  
+  (*keep_hierarchy*)cluster_interconnect_wrap #(
     .NB_CORES           ( NB_CORES           ),
     .HWPE_PRESENT       ( HWPE_PRESENT       ),
     .NB_HWPE_PORTS      ( NB_HWPE_PORTS      ),
@@ -704,7 +705,8 @@ module pulp_cluster
   //*********************DMAC WRAP*********************
   //*************************************************** 
   
-  dmac_wrap #(
+  
+  (*keep_hierarchy*)dmac_wrap #(
     .NB_CTRLS           ( 10                 ),
     .NB_CORES           ( NB_CORES           ),
     .NB_OUTSND_BURSTS   ( NB_OUTSND_BURSTS   ),
@@ -740,7 +742,8 @@ module pulp_cluster
   //**************CLUSTER PERIPHERALS******************
   //*************************************************** 
 
-  cluster_peripherals #(
+  
+  (*keep_hierarchy*)cluster_peripherals #(
     .NB_CORES       ( NB_CORES       ),
     .NB_MPERIPHS    ( NB_MPERIPHS    ),
     .NB_CACHE_BANKS ( NB_CACHE_BANKS ),
@@ -1032,7 +1035,8 @@ module pulp_cluster
     assign s_apu_master_rflags[k][4:0] = s_apu__rflags[k][4:0];
   end
 
-  shared_fpu_cluster #(
+  
+  (*keep_hierarchy*)shared_fpu_cluster #(
     .NB_CORES         ( NB_CORES          ),
     .NB_APUS          ( 1                 ),
     .NB_FPNEW         ( 4                 ),
@@ -1086,7 +1090,8 @@ module pulp_cluster
   //**************************************************************
   generate
     if(HWPE_PRESENT == 1) begin : hwpe_gen
-      hwpe_subsystem #(
+      
+      (*keep_hierarchy*)hwpe_subsystem #(
         .N_CORES       ( NB_CORES             ),
         .N_MASTER_PORT ( NB_HWPE_PORTS        ),
         .ID_WIDTH      ( NB_CORES+NB_MPERIPHS )

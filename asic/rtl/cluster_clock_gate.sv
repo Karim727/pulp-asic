@@ -16,7 +16,7 @@
  * Francesco Conti <fconti@iis.ee.ethz.ch>
  */
 
- (*keep_hierarchy*)module cluster_clock_gate
+ module cluster_clock_gate
 #(
   parameter NB_CORES = 4
 ) (
@@ -66,35 +66,35 @@
         r_clockgate <= {r_clockgate[2:0],1'b0};
     end
   end
+  //original un-mapped version
+    // tc_clk_gating u_clkgate_cluster (
+    //   .clk_o     ( cluster_clk_o ),
+    //   .clk_i     ( clk_i         ),
+    //   .en_i      ( s_clockenable ),
+    //   .test_en_i ( test_mode_i   )
+    // );
 
-  // tc_clk_gating u_clkgate_cluster (
-  //   .clk_o     ( cluster_clk_o ),
-  //   .clk_i     ( clk_i         ),
-  //   .en_i      ( s_clockenable ),
-  //   .test_en_i ( test_mode_i   )
-  // );
+  //instantiate and map to the std cell with no scan enable pin
+    // //but unlike tc_clk_std_cell this has size x4
 
-  //instantiate and map to the std cell
-  // //but unlike tc_clk_std_cell this has size x4
+    //  (* keep = 1*) logic en_or_test;
+    //  assign en_or_test = s_clockenable | test_mode_i;
 
-  //  (* keep = 1*) logic en_or_test;
-  //  assign en_or_test = s_clockenable | test_mode_i;
+    // keep/dont_touch: survive flatten + ABC, stay visible as *u_icg*
+    
+    //  this std_cell has no dedicated test pin
+    // (* keep = 1, dont_touch = 1 *) sky130_fd_sc_hd__dlclkp_4 u_icg (
+    //   .CLK  (clk_i),
+    //   .GATE (en_or_test),
+    //   .GCLK (cluster_clk_o)
+    // );
 
-  // keep/dont_touch: survive flatten + ABC, stay visible as *u_icg*
-  
-  //  this std_cell has no dedicated test pin
-  // (* keep = 1, dont_touch = 1 *) sky130_fd_sc_hd__dlclkp_4 u_icg (
-  //   .CLK  (clk_i),
-  //   .GATE (en_or_test),
-  //   .GCLK (cluster_clk_o)
-  // );
-
-  // pre mapped ICG  
-  sky130_fd_sc_hd__sdlclkp_4 cluster_ICG_i (
-      .CLK  ( clk_i     ),
-      .GATE ( s_clockenable      ),
-      .SCE  ( test_mode_i ),
-      .GCLK ( cluster_clk_o     )
-    );
+  // pre mapped ICG to the std cell with scan enable pin
+    sky130_fd_sc_hd__sdlclkp_4 cluster_ICG_i (
+        .CLK  ( clk_i     ),
+        .GATE ( s_clockenable      ),
+        .SCE  ( test_mode_i ),
+        .GCLK ( cluster_clk_o     )
+      );
 
 endmodule
