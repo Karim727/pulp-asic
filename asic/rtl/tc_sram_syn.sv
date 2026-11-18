@@ -47,8 +47,8 @@ module tc_sram_syn #(
   // PnR view: bind port 0 to the OpenRAM hard macro.
   // OpenRAM has 1 spare row/col, hence 11-bit addr and 33-bit data.
 `ifdef USE_POWER_PINS
-  wire vccd1;
-  wire vssd1;
+  wire PDN_VDD;
+  wire PDN_GND;
 `endif
   wire        csb0 = ~req_i[0];
   wire        web0 = ~we_i[0];
@@ -60,8 +60,8 @@ module tc_sram_syn #(
 
   sram_32x1024 u_sram (
 `ifdef USE_POWER_PINS
-    .vccd1      (vccd1),
-    .vssd1      (vssd1),
+    .vccd1      (PDN_VDD),
+    .vssd1      (PDN_GND),
 `endif
     .clk0       (clk_i),
     .csb0       (csb0),

@@ -51,7 +51,7 @@ FP_CORE_UTIL: 40
 RT_MAX_LAYER: met5
 # try to reduce the density to 40% to avoid congestion and help global placement converge
 # PL_TARGET_DENSITY_PCT: 60
-PDN_MULTILAYER: false
+PDN_MULTILAYER: True
 #-----------------STA-----------------------
 # Run multi-corner STA only at the slowest (setup-dominant) corners
 #only for syn exploration so the resource usage is not too high, for final signoff we will run all corners
@@ -72,8 +72,8 @@ STA_THREADS: 3
 # VDD_NETS: ["vccd1"]
 # GND_NETS: ["vssd1"]
 
-VDD_PIN: "vccd1"
-GND_PIN: "vssd1"
+VDD_PIN: "PDN_VDD"
+GND_PIN: "PDN_GND"
 # PDN_MACRO_CONNECTIONS below is the single owner of all macro PG hookups, so
 # USE_POWER_PINS must stay OFF: with the define set, Yosys.JsonHeader compiles
 # the RTL ifdefs into per-instance local nets (cluster_i.CORE[N].power etc.),
@@ -89,30 +89,30 @@ VERILOG_POWER_DEFINE: "USE_POWER_PINS"
 # `\`, `\[` matches `[`); `]` matches itself as-is. Macro PG pin tails are
 # vccd1/vssd1 for both macro families.
 PDN_MACRO_CONNECTIONS:
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[0\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[1\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[2\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[3\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[4\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[5\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[6\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[7\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[8\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[9\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[10\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[11\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[12\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[13\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[14\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.tcdm_banks_i.banks_gen\\\[15\\\].i_bank.u_sram VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[0\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[1\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[2\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[3\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[4\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[5\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[6\\\].core_region_i VPWR VGND vccd1 vssd1'
-  - 'cluster_i.CORE\\\[7\\\].core_region_i VPWR VGND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[0\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[1\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[2\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[3\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[4\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[5\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[6\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[7\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[8\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[9\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[10\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[11\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[12\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[13\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[14\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.tcdm_banks_i.banks_gen\\\[15\\\].i_bank.u_sram PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[0\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[1\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[2\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[3\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[4\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[5\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[6\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
+  - 'cluster_i.CORE\\\[7\\\].core_region_i PDN_VDD PDN_GND vccd1 vssd1'
 #--------------------------MACRO--------------------------------------
 
 # Hardened OpenRAM macro for TCDM banks (1024x32, 1RW).
