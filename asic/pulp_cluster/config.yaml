@@ -1,6 +1,6 @@
 # clocks are defined in cons.sdc
 #------------------SYNTHESIS-----------------------
-
+CLOCK_PORT: clk_i
 RUN_LINTER: false
 # not to stop flow on synthesis warnings
 # checked most of the warnings and they are not critical, so we can ignore them
@@ -49,9 +49,9 @@ SIGNOFF_SDC_FILE: dir::cons_pnr.sdc
 #-----------------PNR-----------------------
 FP_CORE_UTIL: 40
 RT_MAX_LAYER: met5
-# try to reduce the density to 40% to avoid congestion and help global placement converge
-# PL_TARGET_DENSITY_PCT: 60
-PDN_MULTILAYER: True
+# try to decrease the density to 30% to avoid congestion and help global placement converge the physical denisty is about 20%
+PL_TARGET_DENSITY_PCT: 30
+PDN_MULTILAYER: true
 #-----------------STA-----------------------
 # Run multi-corner STA only at the slowest (setup-dominant) corners
 #only for syn exploration so the resource usage is not too high, for final signoff we will run all corners
@@ -123,24 +123,28 @@ PDN_MACRO_CONNECTIONS:
 MACROS:
   sram_32x1024:
     instances:
-      # Initial macro placement (PDN-0235): banks in a 4x4 grid at the bottom
-      # of the die. Column pitch = 808.845 + 20us gap, row pitch = 351.29 + 20us.
-      cluster_i.tcdm_banks_i.banks_gen[0].i_bank.u_sram: {location: [50, 50], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[1].i_bank.u_sram: {location: [878.845, 50], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[2].i_bank.u_sram: {location: [1707.69, 50], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[3].i_bank.u_sram: {location: [2536.535, 50], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[4].i_bank.u_sram: {location: [50, 421.29], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[5].i_bank.u_sram: {location: [878.845, 421.29], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[6].i_bank.u_sram: {location: [1707.69, 421.29], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[7].i_bank.u_sram: {location: [2536.535, 421.29], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[8].i_bank.u_sram: {location: [50, 792.58], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[9].i_bank.u_sram: {location: [878.845, 792.58], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[10].i_bank.u_sram: {location: [1707.69, 792.58], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[11].i_bank.u_sram: {location: [2536.535, 792.58], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[12].i_bank.u_sram: {location: [50, 1163.87], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[13].i_bank.u_sram: {location: [878.845, 1163.87], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[14].i_bank.u_sram: {location: [1707.69, 1163.87], orientation: N}
-      cluster_i.tcdm_banks_i.banks_gen[15].i_bank.u_sram: {location: [2536.535, 1163.87], orientation: N}
+      #not final positioning 
+      #row 1
+      cluster_i.tcdm_banks_i.banks_gen[0].i_bank.u_sram: {location: [50, 5850.565], orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[1].i_bank.u_sram: {location: [959.115, 5850.565], orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[2].i_bank.u_sram: {location: [1868.23, 5850.565], orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[3].i_bank.u_sram: {location: [2777.345, 5850.565], orientation: N}
+      
+      cluster_i.tcdm_banks_i.banks_gen[4].i_bank.u_sram: {location: [3686.46, 5850.565], orientation: N}
+      cluster_i.tcdm_banks_i.banks_gen[5].i_bank.u_sram: {location: [4595.575, 5850.565], orientation: N}
+      
+      cluster_i.tcdm_banks_i.banks_gen[6].i_bank.u_sram: {location: [5504.69, 5850.565], orientation: N}
+      #row 2
+      cluster_i.tcdm_banks_i.banks_gen[7].i_bank.u_sram: {location: [550, 5400], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[8].i_bank.u_sram: {location: [1489.115, 5400], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[9].i_bank.u_sram: {location: [2408.23, 5400], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[10].i_bank.u_sram: {location: [3347.345, 5400], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[11].i_bank.u_sram: {location: [4276.46, 5400], orientation: FS}
+      #row 3
+      cluster_i.tcdm_banks_i.banks_gen[12].i_bank.u_sram: {location: [50, 4850], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[13].i_bank.u_sram: {location: [1000, 4850], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[14].i_bank.u_sram: {location: [2000, 4850], orientation: FS}
+      cluster_i.tcdm_banks_i.banks_gen[15].i_bank.u_sram: {location: [3000, 4850], orientation: FS}
     gds:
       - dir::../SRAM_32x1024_v2/macro/sram_32x1024/sram_32x1024_fill.gds
     lef:
@@ -169,14 +173,14 @@ MACROS:
     instances:
       # Initial macro placement (PDN-0235): cores in a 4x2 grid above the SRAM
       # array. Column pitch = 956.305 + 20us gap, row pitch = 967.025 + 20us.
-      cluster_i.CORE[0].core_region_i: {location: [50, 1600], orientation: N}
-      cluster_i.CORE[1].core_region_i: {location: [1026.305, 1600], orientation: N}
-      cluster_i.CORE[2].core_region_i: {location: [2002.61, 1600], orientation: N}
-      cluster_i.CORE[3].core_region_i: {location: [2978.915, 1600], orientation: N}
-      cluster_i.CORE[4].core_region_i: {location: [50, 2587.025], orientation: N}
-      cluster_i.CORE[5].core_region_i: {location: [1026.305, 2587.025], orientation: N}
-      cluster_i.CORE[6].core_region_i: {location: [2002.61, 2587.025], orientation: N}
-      cluster_i.CORE[7].core_region_i: {location: [2978.915, 2587.025], orientation: N}
+      cluster_i.CORE[0].core_region_i: {location: [4814, 50], orientation: S}
+      cluster_i.CORE[1].core_region_i: {location: [4814, 1617], orientation: S}
+      cluster_i.CORE[2].core_region_i: {location: [4814, 3100], orientation: S}
+      cluster_i.CORE[3].core_region_i: {location: [3063, 50], orientation: FN}
+      cluster_i.CORE[4].core_region_i: {location: [3063, 1617], orientation: FN}
+      cluster_i.CORE[5].core_region_i: {location: [3063, 3100], orientation: FN}
+      cluster_i.CORE[6].core_region_i: {location: [1306, 50], orientation: S}
+      cluster_i.CORE[7].core_region_i: {location: [1306, 1617], orientation: S}
     gds:
       - dir::core_macro/gds/core_region_wrap.gds
     lef:
