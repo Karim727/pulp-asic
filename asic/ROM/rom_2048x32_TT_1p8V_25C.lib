@@ -1,0 +1,245 @@
+library (rom_2048x32_TT_1p8V_25C_lib){
+        delay_model : "table_lookup";
+        time_unit : "1ns" ;
+        voltage_unit : "1V" ;
+        current_unit : "1mA" ;
+        resistance_unit : "1kohm" ;
+        capacitive_load_unit(1, pF) ;
+        leakage_power_unit : "1mW" ;
+        pulling_resistance_unit : "1kohm" ;
+        operating_conditions(OC){
+        process : 1.0 ;
+        voltage : 1.8 ;
+        temperature : 25;
+        }
+
+        input_threshold_pct_fall       :  50.0 ;
+        output_threshold_pct_fall      :  50.0 ;
+        input_threshold_pct_rise       :  50.0 ;
+        output_threshold_pct_rise      :  50.0 ;
+        slew_lower_threshold_pct_fall  :  10.0 ;
+        slew_upper_threshold_pct_fall  :  90.0 ;
+        slew_lower_threshold_pct_rise  :  10.0 ;
+        slew_upper_threshold_pct_rise  :  90.0 ;
+
+        nom_voltage : 1.8;
+        nom_temperature : 25;
+        nom_process : 1.0;
+        default_cell_leakage_power    : 0.0 ;
+        default_leakage_power_density : 0.0 ;
+        default_input_pin_cap    : 1.0 ;
+        default_inout_pin_cap    : 1.0 ;
+        default_output_pin_cap   : 0.0 ;
+        default_max_transition   : 0.5 ;
+        default_fanout_load      : 1.0 ;
+        default_max_fanout   : 4.0 ;
+        default_connection_class : universal ;
+
+        voltage_map ( VCCD1, 1.8 );
+        voltage_map ( VSSD1, 0 );
+
+        lu_table_template(CELL_TABLE){
+            variable_1 : input_net_transition;
+            variable_2 : total_output_net_capacitance;
+            index_1("0.05, 0.2, 0.5");
+            index_2("0.005, 0.02, 0.08");
+        }
+
+        lu_table_template(CONSTRAINT_TABLE){
+            variable_1 : related_pin_transition;
+            variable_2 : constrained_pin_transition;
+            index_1("0.05, 0.2, 0.5");
+            index_2("0.05, 0.2, 0.5");
+        }
+
+        default_operating_conditions : OC;
+
+        type (data){
+        base_type : array;
+        data_type : bit;
+        bit_width : 32;
+        bit_from : 31;
+        bit_to : 0;
+        }
+
+        type (addr){
+        base_type : array;
+        data_type : bit;
+        bit_width : 11;
+        bit_from : 10;
+        bit_to : 0;
+        }
+
+    /* ESTIMATED timing model - NOT characterized on this macro.
+       Scaled from the SPICE characterization of rom_256x32_rev_d24 (TT, rom_char.py):
+       clk0->dout0 fall +4.0 ns (256-cell bitline chain instead of 32), rise +1.0 ns,
+       fall transition x0.5 (output buffer o12b1), leakage x7 (transistor count),
+       setup/hold and pin caps as in the 256x32. 10% margin included.
+       Reference: SPICE of the 2048x32 at SS 1.6V/100C gave ~9.6 ns access.
+       KNOWN ISSUE: this macro has a row-decoder race (OpenRAM decoder rails
+       precharged high) -> wrong reads in SPICE. Layout is DRC/LVS clean; use for
+       PnR / STA / regression only, not for silicon.
+       clk0 low = precharge, clk0 high = evaluate. addr0/cs0: setup to the clk0 RISE,
+       hold to the clk0 FALL. dout0 must be captured at the clk0 falling edge. */
+    cell (rom_2048x32){
+        memory(){
+        type : rom;
+        address_width : 11;
+        word_width : 32;
+        }
+        interface_timing : true;
+        dont_use  : true;
+        map_only   : true;
+        dont_touch : true;
+        area : 147781.9656;
+
+        pg_pin(vccd1) {
+             voltage_name : VCCD1;
+             pg_type : primary_power;
+        }
+
+        pg_pin(vssd1) {
+             voltage_name : VSSD1;
+             pg_type : primary_ground;
+        }
+
+        leakage_power () {
+          value : 0.001810;
+        }
+        cell_leakage_power : 0.001810;
+
+        bus(dout0){
+            bus_type  : data;
+            direction  : output;
+            max_capacitance : 0.08;
+            min_capacitance : 0.005;
+            memory_read(){
+                address : addr0;
+            }
+            pin(dout0[31:0]){
+            timing(){
+                timing_sense : non_unate;
+                related_pin : "clk0";
+                timing_type : rising_edge;
+                cell_rise(CELL_TABLE) {
+                values("2.667, 2.698, 2.770",\
+                   "2.701, 2.732, 2.803",\
+                   "2.749, 2.781, 2.851");
+                }
+                cell_fall(CELL_TABLE) {
+                values("6.828, 7.135, 7.711",\
+                   "6.862, 7.169, 7.745",\
+                   "6.903, 7.209, 7.786");
+                }
+                rise_transition(CELL_TABLE) {
+                values("0.074, 0.096, 0.210",\
+                   "0.069, 0.090, 0.209",\
+                   "0.073, 0.095, 0.209");
+                }
+                fall_transition(CELL_TABLE) {
+                values("0.053, 0.142, 0.443",\
+                   "0.053, 0.141, 0.443",\
+                   "0.054, 0.142, 0.443");
+                }
+            }
+            }
+        }
+
+        bus(addr0){
+            bus_type  : addr;
+            direction  : input;
+            capacitance : 0.00449;
+            max_transition       : 0.5;
+            pin(addr0[10:0]){
+            timing(){
+                timing_type : setup_rising;
+                related_pin : "clk0";
+                rise_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+                fall_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+            }
+            timing(){
+                timing_type : hold_falling;
+                related_pin : "clk0";
+                rise_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+                fall_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+            }
+            }
+        }
+
+        pin(cs0){
+            direction  : input;
+            capacitance : 0.00233;
+            timing(){
+                timing_type : setup_rising;
+                related_pin : "clk0";
+                rise_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+                fall_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+            }
+            timing(){
+                timing_type : hold_falling;
+                related_pin : "clk0";
+                rise_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+                fall_constraint(CONSTRAINT_TABLE) {
+                values("0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100",\
+                   "0.100, 0.100, 0.100");
+                }
+            }
+        }
+
+        pin(clk0){
+            clock : true;
+            direction  : input;
+            capacitance : 0.00183;
+            timing(){
+                timing_type : "min_pulse_width";
+                related_pin  : clk0;
+                rise_constraint(scalar) {
+                    values("7.786");
+                }
+                fall_constraint(scalar) {
+                    values("7.786");
+                }
+             }
+            timing(){
+                timing_type : "minimum_period";
+                related_pin  : clk0;
+                rise_constraint(scalar) {
+                    values("15.572");
+                }
+                fall_constraint(scalar) {
+                    values("15.572");
+                }
+            }
+        }
+        }
+    }
+    

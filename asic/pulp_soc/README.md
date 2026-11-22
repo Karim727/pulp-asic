@@ -19,7 +19,8 @@ librelane config.yaml flist.yaml --run-tag <tag>  # same invocation as before, n
 | `Makefile` | Builds `flist.yaml` from bender plus the files in `rtl/` |
 | `rtl/` | Modified and new RTL (see below) |
 | `../SRAM_32x1024/macro/` | Shared `sram_32x1024` OpenRAM macro views (GDS/LEF/LIB/V), used by `config.yaml` (same macro as pulp_cluster) |
-| `scripts/` | `gen_boot_rom.py` (builds `rtl/generic_rom.sv`), `tb_generic_rom.sv` (checks it against the `.cde`) |
+| `../ROM/` | Boot ROM macro `rom_2048x32` views (GDS/LEF/LIB/V), used by `config.yaml` |
+| `scripts/` | `gen_boot_rom.py` / `tb_generic_rom.sv` (old standard-cell ROM, not used any more), `check_sdc.tcl`, `probe_clocks.tcl` (read-only STA checks) |
 | `docs/` | Analysis reports (flip-flop breakdown, script) |
 
 ## RTL changes (`rtl/`)
@@ -36,7 +37,7 @@ The `Makefile` lists each file by name, with a one-line comment.
 | `asic/rtl/tc_clk.sv` | replace | Shared team file: `tc_clk_gating` mapped to the sky130 ICG cell `sky130_fd_sc_hd__sdlclkp_1` instead of latch + AND (~99 clock gates in pulp_soc, mostly uDMA) |
 | `memory_models.sv` | **removed** | Old L2 models, unused; they need `generic_memory`, which has no model |
 | `gf22_FLL.sv` | add | FLL stub: `FLLCLK = REFCLK`, `LOCK = 1`, `CFGACK = CFGREQ` |
-| `generic_rom.sv` | add | Boot ROM (8 KB) from standard cells. **Generated** by `scripts/gen_boot_rom.py` from `sim/boot/boot_code.cde`; do not edit by hand |
+| `generic_rom.sv` | add | Boot ROM wrapper around the `rom_2048x32` macro (same ports as `generic_rom`, 1-cycle latency). Do not run `scripts/gen_boot_rom.py`: it overwrites this file |
 | `tc_sram_l2.sv` | add | L2 cut built from N × `sram_32x1024` (N = NumWords / 1024); behavioral view in simulation |
 | `rtl/pulp/jtag_tap_top.sv` | add | JTAG TAP from the PULP top (not part of package `pulp_soc`) |
 
@@ -59,11 +60,10 @@ Matching changes outside this folder:
 
 ## Boot ROM
 
-The boot ROM (`0x1A00_0000`, 2048 × 32 bit = 8 KB) is built from **standard cells**, not a ROM macro. Only 353 of the 2048 words are non-zero, so the logic is small, needs no `.lib`, and has no DRC issues. The OpenRAM ROM macro had 1984 DRC errors and no timing model.
+The boot ROM (`0x1A00_0000`, 2048 × 32 bit = 8 KB) is the OpenRAM ROM macro `rom_2048x32` (`../ROM`, DRC 0, LVS match, estimated TT `.lib`), wrapped by `rtl/generic_rom.sv`. See `../ROM/README.md` for status and known issues.
 
-- The content comes from `sim/boot/boot_code.cde`, the same image the RTL simulation uses. It is identical to `asic/ROM/boot_rom_data.bin`.
-- If the boot code changes, run `python3 scripts/gen_boot_rom.py`, then `make flist` and re-run synthesis.
-- To check the generated ROM, see the header of `scripts/tb_generic_rom.sv` (QuestaSim, expected `PASS: 2048 addresses match`).
+- The content comes from `sim/boot/boot_code.cde`, the same image the RTL simulation uses.
+- If the boot code changes, the macro must be regenerated with OpenRAM.
 - The content is fixed in silicon. The final boot code (boot modes: JTAG / SPI flash / HyperFlash) must be agreed before tape-out.
 
 ## Clocking

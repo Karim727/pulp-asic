@@ -15,7 +15,7 @@ USE_SLANG: true
 # SYNTH_SHOW: true
 SYNTH_SHARE_RESOURCES: true
 SYNTH_HIERARCHY_MODE: flatten
-#ERROR_ON_SYNTH_CHECKS: false
+ERROR_ON_SYNTH_CHECKS: false
 #SYNTH_STRATEGY: "AREA 2"
 #SYNTH_ABC_BUFFERING: true
 # SYNTH_SIZING: true
@@ -43,8 +43,8 @@ LEFT_MARGIN_MULT: 42
 
 
 ##################################
-# L2 SRAM macros (sram_32x1024, OpenRAM, 1024x32 1RW, 808.8 x 351.3 um)
-# shared macro views in asic/SRAM_32x1024/macro (same macro as pulp_cluster)
+# L2 SRAM macros (sram_32x1024, OpenRAM, 1024x32 1RW, 809.1 x 351.3 um)
+# DRC/LVS-clean views in asic/SRAM_32x1024/macro/sram_32x1024 (see its README)
 ##################################
 # 16 macros = 64 KB L2, built by rtl/tc_sram_l2.sv inside rtl/l2_ram_multi_bank.sv:
 #   interleaved banks CUTS[0..3]       : 2 macros each (8 KB)
@@ -71,15 +71,35 @@ MACROS:
       l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[2].u_sram: {orientation: N}
       l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[3].u_sram: {orientation: N}
     gds:
-      - dir::../SRAM_32x1024/macro/sram_32x1024.gds
+      - dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_fill.gds
     lef:
-      - dir::../SRAM_32x1024/macro/sram_32x1024.lef
+      - dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024.lef
     nl:
-      - dir::../SRAM_32x1024/macro/sram_32x1024.v
+      - dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024.v
     lib:
-      min_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
-      nom_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
-      max_*: [dir::../SRAM_32x1024/macro/sram_32x1024_TT_1p8V_25C.lib]
+      "*_tt_025C_1v80": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      "*_ss_100C_1v60": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_SS_1p6V_100C.lib]
+      "*_ff_n40C_1v95": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_FF_1p95V_-40C.lib]
+    spef: {}
+    spice: []
+    sdf: {}
+
+##################################
+# Boot ROM macro (rom_2048x32, OpenRAM ROM, 2048x32, 442.6 x 333.9 um)
+# views in asic/ROM (see its README). Instantiated by rtl/generic_rom.sv.
+# Only a TT .lib exists (estimated) -> used for every corner.
+##################################
+  rom_2048x32:
+    instances:
+      boot_rom_i.rom_mem_i.u_rom_macro: {orientation: N}
+    gds:
+      - dir::../ROM/rom_2048x32.gds
+    lef:
+      - dir::../ROM/rom_2048x32.lef
+    nl:
+      - dir::../ROM/rom_2048x32.v
+    lib:
+      "*": [dir::../ROM/rom_2048x32_TT_1p8V_25C.lib]
     spef: {}
     spice: []
     sdf: {}
@@ -88,6 +108,7 @@ MACROS:
 #   format: <instance regex> <vdd net> <gnd net> <macro vdd pin> <macro gnd pin>
 PDN_MACRO_CONNECTIONS:
   - "l2_ram_i.* vccd1 vssd1 vccd1 vssd1"
+  - "boot_rom_i.* vccd1 vssd1 vccd1 vssd1"
 
 # keep std-cell rows/taps away from the macro edges (same as pulp_cluster)
 FP_MACRO_HORIZONTAL_HALO: 5

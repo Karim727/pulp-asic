@@ -1,8 +1,8 @@
-# SRAM_32x1024_v2: DRC/LVS-clean OpenRAM macro (sky130)
+# SRAM_32x1024: DRC/LVS-clean OpenRAM macro (sky130)
 
 The `sram_32x1024` macro (1024 x 32 bit, 4 KB, 1RW, byte write) for the pulp_soc L2 and the cluster TCDM. This folder holds everything needed to rebuild it: config, scripts, and the pinned OpenRAM version.
 
-The previous macro (`../SRAM_32x1024`) was generated with DRC/LVS disabled, so it was never checked.
+This is the v2 macro. The previous one was generated with DRC/LVS disabled (never checked) and has been removed.
 
 ## Status: done (Nov 2026)
 
@@ -33,7 +33,7 @@ Compared to `../SRAM_32x1024`, the size is 809.115 x 351.29 um (0.27 um wider), 
 # OpenRAM dev at the pinned commit
 cd ~/projects
 git clone -b dev https://github.com/VLSIDA/OpenRAM.git OpenRAM_dev
-git -C OpenRAM_dev checkout $(cat <pulp-asic>/asic/SRAM_32x1024_v2/OPENRAM_COMMIT)
+git -C OpenRAM_dev checkout $(cat <pulp-asic>/asic/SRAM_32x1024/OPENRAM_COMMIT)
 
 # tools (magic/netgen/klayout/python) from the OpenRAM nix shell
 cd ~/OpenRAM && nix develop
