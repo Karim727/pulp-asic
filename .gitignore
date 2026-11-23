@@ -19,6 +19,13 @@
 
 
 # asic
+*.vcd
+*.wlf
+*.raw
+plusacc
+work/
+workset/
+simulation/
 
 runs/
 # *.odb
