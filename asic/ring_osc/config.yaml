@@ -1,0 +1,29 @@
+DESIGN_NAME: ring_osc
+# Frontend
+USE_SLANG: true
+VERILOG_FILES:
+  - dir::ring_osc.sv
+
+# Physical Design (Floorplan & Placement for Sky130)
+FP_SIZING: absolute
+CORE_AREA: [2, 2, 32, 32]
+DIE_AREA: [0, 0, 34, 34]
+
+PDN_HOFFSET: 0.6   # Offset of the first horizontal stripe from the core edge
+PDN_HPITCH: 20     # Horizontal stripe pitch
+PDN_HWIDTH: 1.8    # Width of horizontal (met5) stripes
+PDN_HSPACING: 1.8  # Horizontal stripe spacing
+
+PDN_VOFFSET: 1     # Offset of the first vertical stripe from the core edge
+PDN_VPITCH: 20     # Vertical stripe pitch
+PDN_VWIDTH: 1.0    # Width of vertical (met4) stripes
+PDN_VSPACING: 0.6  # Vertical stripe spacing
+
+VERILOG_POWER_DEFINE: "USE_POWER_PINS"
+VDD_PIN: "vccd1"
+GND_PIN: "vssd1"
+
+MAGIC_EXT_USE_GDS: true
+SYNTH_PARAMETERS:
+  - NUM_DLY_STAGES=6
+  - DIV_BITS=4
