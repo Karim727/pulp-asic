@@ -1,5 +1,5 @@
-# Magic RC PEX extraction script for Sky130A LibreLane GDS output.
-# Usage (via run_pex.sh or inside LibreLane/nix shell):
+# Magic C-PEX extraction script for Sky130A LibreLane GDS output.
+# Usage (via run_pex.sh):
 #   GDS_FILE=runs/<run_tag>/final/gds/ring_osc.gds OUT_SPICE=ring_osc_pex.spice \
 #     magic -dnull -noconsole -rcfile "$PDK_ROOT/sky130A/libs.tech/magic/sky130A.magicrc" extract_pex.tcl
 
@@ -25,7 +25,7 @@ if {[info exists ::env(OUT_SPICE)] && $::env(OUT_SPICE) ne ""} {
 
 if {$gds_file eq "" || ![file exists $gds_file]} {
     puts stderr "ERROR: GDS file not found ('$gds_file'). Set GDS_FILE=..."
-    quit -noprompt 1
+    exit 1
 }
 
 puts stdout "Reading GDS: $gds_file"
@@ -37,17 +37,15 @@ cellname delete $design_name
 cellname rename ${design_name}_flat $design_name
 select top cell
 
-# Full RC parasitic extraction (ngspice() scale matches sky130.lib.spice .option scale=1.0u)
+# Flattened capacitive PEX (avoids Magic 8.3 extresist segfault on merged PDN rails
+# and avoids hierarchical negative overlap capacitances; ngspice() units match scale=1.0u)
 extract do local
 extract all
 ext2sim labels on
 ext2sim
-extresist tolerance 10
-extresist
 
 ext2spice lvs
 ext2spice cthresh 0.01
-ext2spice extresist on
 ext2spice scale off
 ext2spice -o $out_spice
 

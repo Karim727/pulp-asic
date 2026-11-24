@@ -5,6 +5,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 export PDK_ROOT="${PDK_ROOT:-/home/karim/.ciel/ciel/sky130/versions/8afc8346a57fe1ab7934ba5a6056ea8b43078e71}"
 export DESIGN_NAME="${DESIGN_NAME:-ring_osc}"
 
+# Auto-enter LibreLane AppImage devshell if magic is not on PATH
+if ! command -v magic >/dev/null 2>&1; then
+    DEVSHELL="${LIBRELANE_DEVSHELL:-$HOME/librelane-devshell-x86_64.AppImage}"
+    if [[ -x "$DEVSHELL" ]]; then
+        export APPIMAGELAUNCHER_DISABLE=true
+        exec "$DEVSHELL" "$0" "$@"
+    fi
+    echo "ERROR: 'magic' not found in PATH and '$DEVSHELL' not executable." >&2
+    exit 1
+fi
+
 if [[ $# -ge 1 ]]; then
     export GDS_FILE="$(realpath "$1")"
 else
@@ -24,11 +35,6 @@ else
 fi
 
 MAGICRC="$PDK_ROOT/sky130A/libs.tech/magic/sky130A.magicrc"
-if ! command -v magic >/dev/null 2>&1; then
-    echo "ERROR: 'magic' not found in PATH. Run inside your LibreLane/Nix shell." >&2
-    exit 1
-fi
-
 TMP_WORK="$(mktemp -d)"
 trap 'rm -rf "$TMP_WORK"' EXIT
 
