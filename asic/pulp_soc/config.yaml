@@ -1,7 +1,7 @@
 DESIGN_NAME: pulp_soc
 # main clock: the FLL stubs (rtl/gf22_FLL.sv) pass ref_clk_i to soc/per/cluster clocks
 CLOCK_PORT: ref_clk_i
-CLOCK_PERIOD: 50.0
+CLOCK_PERIOD: 60.0
 #PDK: sky130
 #PDK_VERSION: 8afc8346a57fe1ab7934ba5a6056ea8b43078e71
 #PNR_SDC_FILE: dir::riscv_core_pre_pnr.sdc
@@ -12,19 +12,21 @@ SIGNOFF_SDC_FILE: dir::pulp_soc.sdc
 
 # Frontend
 USE_SLANG: true
+SLANG_ARGUMENTS: 
+  - "--keep-hierarchy"
 # SYNTH_SHOW: true
 SYNTH_SHARE_RESOURCES: true
 SYNTH_HIERARCHY_MODE: flatten
 ERROR_ON_SYNTH_CHECKS: false
-#SYNTH_STRATEGY: "AREA 2"
-#SYNTH_ABC_BUFFERING: true
+SYNTH_STRATEGY: "AREA 3"
+SYNTH_ABC_BUFFERING: true
 # SYNTH_SIZING: true
 
 
 # Physical Design (Floorplan & Placement for Sky130)
 FP_SIZING: relative
 FP_CORE_UTIL: 30
-PL_TARGET_DENSITY_PCT: 45
+PL_TARGET_DENSITY_PCT: 35
 # DRT_OPT_ITERS: 1 
 GRT_ADJUSTMENT: 0.25
 # FLL stub buffers (gf22_FLL.sv): resizer must not touch them
@@ -45,8 +47,8 @@ LEFT_MARGIN_MULT: 42
 
 
 ##################################
-# L2 SRAM macros (sram_32x1024, OpenRAM, 1024x32 1RW, 809.1 x 351.3 um)
-# DRC/LVS-clean views in asic/SRAM_32x1024/macro/sram_32x1024 (see its README)
+# L2 SRAM macros (sram_32x1024, OpenRAM, 1024x32 1RW, 808.8 x 351.3 um)
+# shared macro views in asic/SRAM_32x1024/macro (same macro as pulp_cluster)
 ##################################
 # 16 macros = 64 KB L2, built by rtl/tc_sram_l2.sv inside rtl/l2_ram_multi_bank.sv:
 #   interleaved banks CUTS[0..3]       : 2 macros each (8 KB)
@@ -55,23 +57,25 @@ LEFT_MARGIN_MULT: 42
 # CHECK them against the synthesized netlist on the first run.
 MACROS:
   sram_32x1024:
+    # 4x4 SRAM grid in the bottom-left of the core, 10 um gaps
+    # (5 um halo on each macro). Core lower-left = (19.32, 21.76) um.
     instances:
-      l2_ram_i.CUTS[0].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
-      l2_ram_i.CUTS[0].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
-      l2_ram_i.CUTS[1].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
-      l2_ram_i.CUTS[1].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
-      l2_ram_i.CUTS[2].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
-      l2_ram_i.CUTS[2].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
-      l2_ram_i.CUTS[3].bank_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
-      l2_ram_i.CUTS[3].bank_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[2].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[3].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[0].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[1].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[2].u_sram: {orientation: N}
-      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[3].u_sram: {orientation: N}
+      l2_ram_i.CUTS[0].bank_i.gen_multi.gen_macro[0].u_sram: {location: [24.32, 26.76], orientation: FS}
+      l2_ram_i.CUTS[0].bank_i.gen_multi.gen_macro[1].u_sram: {location: [843.435, 26.76], orientation: FS}
+      l2_ram_i.CUTS[1].bank_i.gen_multi.gen_macro[0].u_sram: {location: [1662.55, 26.76], orientation: FS}
+      l2_ram_i.CUTS[1].bank_i.gen_multi.gen_macro[1].u_sram: {location: [2481.665, 26.76], orientation: FS}
+      l2_ram_i.CUTS[2].bank_i.gen_multi.gen_macro[0].u_sram: {location: [24.32, 388.05], orientation: FS}
+      l2_ram_i.CUTS[2].bank_i.gen_multi.gen_macro[1].u_sram: {location: [843.435, 388.05], orientation: FS}
+      l2_ram_i.CUTS[3].bank_i.gen_multi.gen_macro[0].u_sram: {location: [1662.55, 388.05], orientation: FS}
+      l2_ram_i.CUTS[3].bank_i.gen_multi.gen_macro[1].u_sram: {location: [2481.665, 388.05], orientation: FS}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[0].u_sram: {location: [24.32, 749.34], orientation: FS}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[1].u_sram: {location: [843.435, 749.34], orientation: FS}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[2].u_sram: {location: [1662.55, 749.34], orientation: FS}
+      l2_ram_i.bank_sram_pri0_i.gen_multi.gen_macro[3].u_sram: {location: [2481.665, 749.34], orientation: FS}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[0].u_sram: {location: [24.32, 1110.63], orientation: FS}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[1].u_sram: {location: [843.435, 1110.63], orientation: FS}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[2].u_sram: {location: [1662.55, 1110.63], orientation: FS}
+      l2_ram_i.bank_sram_pri1_i.gen_multi.gen_macro[3].u_sram: {location: [2481.665, 1110.63], orientation: FS}
     gds:
       - dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_fill.gds
     lef:
@@ -86,14 +90,17 @@ MACROS:
     spice: []
     sdf: {}
 
-##################################
-# Boot ROM macro (rom_2048x32, OpenRAM ROM, 2048x32, 442.6 x 333.9 um)
-# views in asic/ROM (see its README). Instantiated by rtl/generic_rom.sv.
-# Only a TT .lib exists (estimated) -> used for every corner.
-##################################
+  # ---------------------------------------------------------------------------
+  # Boot ROM macro (ROM_V2: boot_rom_2048x32, OpenRAM, 2048x32 = 8 KB,
+  # 313.09 x 330.56 um). Instantiated by rtl/generic_rom.sv (TARGET_SYNTHESIS
+  # view) inside the unmodified boot_rom.sv wrapper (bender package pulp_soc).
+  # Only gds/lef/netlist views exist - OpenRAM generated no .lib, .spef or
+  # .sdf for the ROM, so it has no timing model in STA.
+  # ---------------------------------------------------------------------------
   rom_2048x32:
+    # ROM to the right of the 4x4 SRAM block, still at the bottom of the core
     instances:
-      boot_rom_i.rom_mem_i.u_rom_macro: {orientation: N}
+      boot_rom_i.rom_mem_i.u_rom: {location: [3300.78, 26.76], orientation: FS}
     gds:
       - dir::../ROM/rom_2048x32.gds
     lef:
@@ -108,9 +115,11 @@ MACROS:
 
 # macro power pins (vccd1/vssd1) -> core power grid
 #   format: <instance regex> <vdd net> <gnd net> <macro vdd pin> <macro gnd pin>
+#   VDD/GND nets MUST be the core grid nets (VDD_PIN/GND_PIN = VPWR/VGND);
+#   the last two fields are the OpenRAM macro LEF pin names.
 PDN_MACRO_CONNECTIONS:
-  - "l2_ram_i.* vccd1 vssd1 vccd1 vssd1"
-  - "boot_rom_i.* vccd1 vssd1 vccd1 vssd1"
+  - "l2_ram_i.* VPWR VGND vccd1 vssd1"
+  - "boot_rom_i.* VPWR VGND vccd1 vssd1"
 
 # keep std-cell rows/taps away from the macro edges (same as pulp_cluster)
 FP_MACRO_HORIZONTAL_HALO: 5
