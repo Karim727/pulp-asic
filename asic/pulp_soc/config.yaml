@@ -8,7 +8,7 @@ CLOCK_PERIOD: 60.0
 
 # timing constraints: ref_clk, jtag_tck, cam_clk, i2s_sck (async), I/O delays
 PNR_SDC_FILE: dir::pulp_soc.sdc
-SIGNOFF_SDC_FILE: dir::pulp_soc.sdc
+SIGNOFF_SDC_FILE: dir::pulp_soc_pnr.sdc
 
 # Frontend
 USE_SLANG: true
@@ -84,8 +84,8 @@ MACROS:
       - dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024.v
     lib:
       "*_tt_025C_1v80": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
-      "*_ss_100C_1v60": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_SS_1p6V_100C.lib]
-      "*_ff_n40C_1v95": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_FF_1p95V_-40C.lib]
+      #"*_ss_100C_1v60": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_SS_1p6V_100C.lib]
+      #"*_ff_n40C_1v95": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_FF_1p95V_-40C.lib]
     spef: {}
     spice: []
     sdf: {}
