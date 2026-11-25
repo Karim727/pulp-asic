@@ -100,7 +100,7 @@ MACROS:
   rom_2048x32:
     # ROM to the right of the 4x4 SRAM block, still at the bottom of the core
     instances:
-      boot_rom_i.rom_mem_i.u_rom: {location: [3300.78, 26.76], orientation: FS}
+      boot_rom_i.rom_mem_i.u_rom_macro: {location: [3300.78, 26.76], orientation: FS}
     gds:
       - dir::../ROM/rom_2048x32.gds
     lef:
