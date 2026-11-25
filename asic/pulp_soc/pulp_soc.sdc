@@ -120,6 +120,9 @@ set_false_path -through [get_nets hyper_reset_no]
 set_false_path -through [get_nets {
     soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clock_master.clk_sel_i
     soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clock_ext_master.clk_sel_i
+    soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clock_slave.clk_sel_i
+    soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clock_ext_slave.clk_sel_i
+    soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clk_slave_out.clk_sel_i
 }]
 
 # Cluster interface: async FIFO pointers/data (gray-coded, synchronized in the CDC FIFOs).
