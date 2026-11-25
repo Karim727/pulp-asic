@@ -96,8 +96,7 @@ set_clock_groups -asynchronous \
     -group {i2s_sck} \
     -group {hyper_rwds}
 
-set_clock_uncertainty 0.25 [all_clocks]
-set_clock_transition  0.15 [all_clocks]
+set_clock_uncertainty -setup 0.25 -hold 0.05 [all_clocks]
 
 # -----------------------------------------------------------------------------
 # 3. False paths

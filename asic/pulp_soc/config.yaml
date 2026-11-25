@@ -83,7 +83,7 @@ MACROS:
     nl:
       - dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024.v
     lib:
-      "*_tt_025C_1v80": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
+      "*": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_TT_1p8V_25C.lib]
       #"*_ss_100C_1v60": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_SS_1p6V_100C.lib]
       #"*_ff_n40C_1v95": [dir::../SRAM_32x1024/macro/sram_32x1024/sram_32x1024_FF_1p95V_-40C.lib]
     spef: {}

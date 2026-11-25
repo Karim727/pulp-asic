@@ -33,7 +33,7 @@ REPLACE_FILES += $(RTL)/pulp_soc.sv
 # L2 private banks = 4096 words; all L2 banks use tc_sram_l2 (sram_32x1024 macros)
 REPLACE_FILES += $(RTL)/l2_ram_multi_bank.sv
 # slang fix: LatencyMode cast to axi_pkg::xbar_latency_e
-REPLACE_FILES += $(RTL)/soc_interconnect.sv
+#REPLACE_FILES += $(RTL)/soc_interconnect.sv
 # slang fix: hyper read logic "else if(!is_hyper_read_q)" -> "else"
 REPLACE_FILES += $(RTL)/udma_subsystem.sv
 # slang fix: FP register file only when FPU == 1 && Zfinx == 0
@@ -59,6 +59,8 @@ ADD_FILES += $(RTL)/generic_rom.sv
 ADD_FILES += $(RTL)/tc_sram_l2.sv
 # JTAG TAP of the PULP top (lives in pulp-asic/rtl/pulp, not in package pulp_soc)
 ADD_FILES += $(PULP)/rtl/pulp/jtag_tap_top.sv
+# slang fix: LatencyMode cast to axi_pkg::xbar_latency_e
+ADD_FILES += $(RTL)/soc_interconnect.sv
 
 # =============================================================================
 .DEFAULT_GOAL := flist
