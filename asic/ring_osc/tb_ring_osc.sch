@@ -61,7 +61,7 @@ spice_ignore=false}
 C {devices/code_shown.sym} 60 20 0 0 {name=SIM
 only_toplevel=true
 value="
-.include /home/karim/pulp-asic/asic/ring_osc/ring_osc_pex.spice
+.include /home/karim/pulp-asic/asic/ring_osc/runs/PEX/final/spice_rcx/ring_osc.rcx.spice
 .control
 set noaskquit
 save all
