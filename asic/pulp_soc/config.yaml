@@ -27,6 +27,8 @@ FP_CORE_UTIL: 30
 PL_TARGET_DENSITY_PCT: 45
 # DRT_OPT_ITERS: 1 
 GRT_ADJUSTMENT: 0.25
+# FLL stub buffers (gf22_FLL.sv): resizer must not touch them
+RSZ_DONT_TOUCH_RX: "u_fll_clkbuf"
 ##################################
 # Macro configs
 ##################################

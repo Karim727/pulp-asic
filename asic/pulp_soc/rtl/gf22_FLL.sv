@@ -4,7 +4,7 @@
 //
 // The real gf22_FLL is a GF22 mixed-signal block with no SKY130 equivalent.
 // This module keeps the same ports so soc_clk_rst_gen.sv needs no change,
-// but it is just a wire for the clock:
+// but the clock is only a fixed buffer cell (dont_touch in config.yaml):
 //
 //   FLLCLK = REFCLK   -> soc, peripheral and cluster clocks all come from ref_clk_i
 //                        (the clock muxes see ref_clk_i on both inputs, so the
@@ -40,7 +40,11 @@ module gf22_FLL (
   output logic        JTQ       // JTAG test data out
 );
 
-  assign FLLCLK = REFCLK;
+  (* keep *) sky130_fd_sc_hd__clkbuf_4 u_fll_clkbuf (
+    .A ( REFCLK ),
+    .X ( FLLCLK )
+  );
+
   assign LOCK   = 1'b1;
   assign CFGACK = CFGREQ;
   assign CFGQ   = '0;

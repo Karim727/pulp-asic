@@ -8,6 +8,7 @@
 #   jtag_tck_i       JTAG / debug clock  slow, asynchronous to ref_clk
 #   cam_clk_i        camera pixel clock  asynchronous (uDMA camera interface)
 #   i2s_slave_sck_i  I2S bit clock       asynchronous (uDMA I2S)
+#   hyper_rwds_i     HyperBus read clock asynchronous (source-synchronous with hyper_dq_i)
 #
 # Not clocks for timing: slow_clk_i (32 kHz, sampled by synchronizers),
 # test_clk_i (unused). Both are false paths.
@@ -25,6 +26,7 @@ set CLK_PER   $::env(CLOCK_PERIOD)
 set JTAG_PER  100.0
 set CAM_PER   50.0
 set I2S_PER   100.0
+set RWDS_PER  [expr 2.0 * $CLK_PER]
 
 # I/O budget: 20% of the main clock period outside this block
 set IO_DLY [expr 0.2 * $CLK_PER]
@@ -36,6 +38,7 @@ create_clock -name ref_clk  -period $CLK_PER  [get_ports ref_clk_i]
 create_clock -name jtag_tck -period $JTAG_PER [get_ports jtag_tck_i]
 create_clock -name cam_clk  -period $CAM_PER  [get_ports cam_clk_i]
 create_clock -name i2s_sck  -period $I2S_PER  [get_ports i2s_slave_sck_i]
+create_clock -name hyper_rwds -period $RWDS_PER [get_ports hyper_rwds_i]
 
 # -----------------------------------------------------------------------------
 # 2. Generated clocks
@@ -76,16 +79,22 @@ create_generated_clock -name hyper_clk90 \
     [get_pins -of_objects [get_nets soc_peripherals_i.i_udma.i_hyper.udma_hyperbus_i.clk90] -filter {direction == output}]
    # [get_pins  _404569_/Q]
 
+# I2S/PDM clock dividers (i2s_clk_gen): fastest setting (cfg_div = 0) is ref_clk / 2
+create_generated_clock -name i2s_gen0 \
+    -source [get_ports ref_clk_i] -divide_by 2 \
+    [get_pins -of_objects [get_nets soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clkgen0.r_clk] -filter {direction == output}]
 
+create_generated_clock -name i2s_gen1 \
+    -source [get_ports ref_clk_i] -divide_by 2 \
+    [get_pins -of_objects [get_nets soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clkgen1.r_clk] -filter {direction == output}]
 
-
-
-# Keep ref_clk-derived generated clocks in the ref_clk group. jtag/cam/i2s
+# Keep ref_clk-derived generated clocks in the ref_clk group. jtag/cam/i2s/rwds
 set_clock_groups -asynchronous \
-    -group {ref_clk spi_clk sdio_clk i2s_sck_out hyper_clk0 hyper_clk90} \
+    -group {ref_clk spi_clk sdio_clk i2s_sck_out hyper_clk0 hyper_clk90 i2s_gen0 i2s_gen1} \
     -group {jtag_tck} \
     -group {cam_clk} \
-    -group {i2s_sck}
+    -group {i2s_sck} \
+    -group {hyper_rwds}
 
 set_clock_uncertainty 0.25 [all_clocks]
 set_clock_transition  0.15 [all_clocks]
@@ -107,6 +116,12 @@ set_false_path -from [get_ports {dft_test_mode_i dft_cg_enable_i mode_select_i b
 #set_ideal_network [get_nets hyper_reset_no]
 set_false_path -through [get_nets hyper_reset_no]
 
+# I2S clock-mux selects: software configuration, quasi-static
+set_false_path -through [get_nets {
+    soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clock_master.clk_sel_i
+    soc_peripherals_i.i_udma.i_i2s_udma.i_clkws_gen.i_clock_ext_master.clk_sel_i
+}]
+
 # Cluster interface: async FIFO pointers/data (gray-coded, synchronized in the CDC FIFOs).
 # Split by direction: async_* contains both inputs and outputs.
 set_false_path -from [get_ports async_*_i]
@@ -124,6 +139,7 @@ set SKIP_PORTS {
     cluster_clk_o cluster_rtc_o
     spi_clk_o sdio_clk_o hyper_ck_o hyper_ck_no i2s_slave_sck_o cam_data_i* cam_hsync_i cam_vsync_i
     i2s_slave_sd0_i i2s_slave_sd1_i i2s_slave_ws_i
+    hyper_rwds_i hyper_dq_i*
 }
 
 proc ports_without {ports patterns} {
@@ -161,6 +177,11 @@ set_input_delay [expr 0.2 * $CAM_PER] -clock cam_clk \
 # I2S slave interface: data/word-select launched by the external master on sck
 set_input_delay [expr 0.2 * $I2S_PER] -clock i2s_sck \
     [get_ports {i2s_slave_sd0_i i2s_slave_sd1_i i2s_slave_ws_i}]
+
+# HyperBus read data: DDR, launched by the memory on both RWDS edges
+# (10% is a placeholder until the HyperRAM datasheet value is set)
+set_input_delay [expr 0.1 * $RWDS_PER] -clock hyper_rwds [get_ports {hyper_dq_i[*]}]
+set_input_delay [expr 0.1 * $RWDS_PER] -clock hyper_rwds -clock_fall -add_delay [get_ports {hyper_dq_i[*]}]
 # -----------------------------------------------------------------------------
 # 5. Port environment
 # -----------------------------------------------------------------------------
